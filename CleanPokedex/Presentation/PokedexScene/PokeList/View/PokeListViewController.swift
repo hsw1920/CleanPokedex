@@ -6,8 +6,10 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
-final class PokeListViewController: UIViewController {    
+final class PokeListViewController: UIViewController {
     private let searchBarContainer: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -19,9 +21,11 @@ final class PokeListViewController: UIViewController {
         return searchController
     }()
     
-    private var tableView: PokeListTableView = PokeListTableView()
+    private var tableView: UITableView = UITableView(frame: .zero)
 
     private var viewModel: PokeListViewModel!
+    
+    var disposeBag = DisposeBag()
     
     // MARK: Lifecycle
     static func create(with viewModel: PokeListViewModel) -> PokeListViewController {
@@ -38,7 +42,6 @@ final class PokeListViewController: UIViewController {
     }
 
     private func setupViews(){
-        title = "Pokedex"
         view.backgroundColor = .systemBackground
         view.addSubview(searchBarContainer)
 
@@ -53,21 +56,44 @@ final class PokeListViewController: UIViewController {
     }
     
     private func setupTableView() {
-        tableView.viewModel = self.viewModel
-        tableView.view.backgroundColor = .systemGray
-        tableView.view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(tableView.view)
+        tableView.backgroundColor = .systemGray
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.estimatedRowHeight = 0
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.register(PokeListItemCell.self,
+                           forCellReuseIdentifier: PokeListItemCell.reuseIdentifier)
+        
+        view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
-            tableView.view.topAnchor.constraint(equalTo: searchBarContainer.bottomAnchor),
-            tableView.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            tableView.topAnchor.constraint(equalTo: searchBarContainer.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
     
     private func bind(to viewModel: PokeListViewModel){
+        let input = PokeListViewModel.Input.init(
+            load: .just(())
+        )
+        let output = viewModel.transform(input: input)
         
+        output.items
+            .bind(to: tableView.rx.items(cellIdentifier: PokeListItemCell.reuseIdentifier,
+                                         cellType: PokeListItemCell.self)
+            ){ _, item, cell in
+                cell.configure(item: item)
+            }
+            .disposed(by: disposeBag)
+        
+        output.screenTitle
+            .bind(to: navigationItem.rx.title)
+            .disposed(by: disposeBag)
+        
+        output.searchBarPlaceholder
+            .bind(to: searchController.searchBar.rx.placeholder)
+            .disposed(by: disposeBag)
     }
 
 }
@@ -76,7 +102,7 @@ extension PokeListViewController {
     func setupSearchController() {
         searchController.delegate = self
         searchController.searchBar.delegate = self
-        searchController.searchBar.placeholder = viewModel.searchBarPlaceholder
+        
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.translatesAutoresizingMaskIntoConstraints = true
         searchController.searchBar.barStyle = .black

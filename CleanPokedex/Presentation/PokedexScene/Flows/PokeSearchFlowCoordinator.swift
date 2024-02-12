@@ -19,7 +19,12 @@ final class PokeSearchFlowCoordinator: Coordinator {
     }
     
     func start() {
-        let vc = PokeListViewController.create(with: PokeListViewModelImp())
+        let service = PokemonService()
+        let repository = PokemonRepositoryImp(pokemonService: service)
+        let usecase = SearchPokemonUseCaseImp(pokemonRepository: repository)
+        let viewModel = PokeListViewModel(searchPokemonUseCase: usecase)
+        let vc = PokeListViewController.create(with: viewModel)
+        
         navigationController.pushViewController(vc, animated: false)
         
     }
