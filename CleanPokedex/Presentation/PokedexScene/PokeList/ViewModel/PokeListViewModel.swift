@@ -12,7 +12,8 @@ import RxCocoa
 final class PokeListViewModel {
     
     struct Input {
-        let load: Observable<Void>
+        let viewWillAppear: Observable<Void>
+        let searchBarTextEvent: Observable<String>
     }
 
     struct Output {
@@ -24,34 +25,48 @@ final class PokeListViewModel {
 
     private let searchPokemonUseCase: SearchPokemonUseCase
     private var disposeBag = DisposeBag()
+    private weak var coordinator: PokeSearchFlowCoordinator?
     
     // MARK: Init
     init(
+        coordinator: PokeSearchFlowCoordinator?,
         searchPokemonUseCase: SearchPokemonUseCase
     ) {
+        self.coordinator = coordinator
         self.searchPokemonUseCase = searchPokemonUseCase
+    }
+    
+    deinit {
+        print("deinit - \(self)")
     }
 
     // MARK: Transform
     func transform(input: Input) -> Output {
         let output = Output()
-        // MARK: Mock
-        //let pokemonFetchObservableMock = Observable.just(PokeListItem.mock)
-        //self.items.accept(PokeListItem.mock)
         
-        input.load
-            .flatMap(searchPokemonUseCase.fetchPokemonList)
-            .map { $0.map {
-                PokeListItem(
-                    number: self.extractPokemonNumber(from: $0.url),
-                    title: $0.name
-                )}
+        input.viewWillAppear
+            .withUnretained(self)
+            .subscribe(onNext: { owner, _ in
+                owner.searchPokemonUseCase.fetchPokemonList()
+            })
+            .disposed(by: disposeBag)
+        
+        input.searchBarTextEvent
+            .withUnretained(self)
+            .flatMapLatest { owner, text in
+                owner.searchPokemonUseCase.filterPokemonList(with: text)
+                    .map(owner.mapToPokeListItems)
             }
             .bind(to: output.items)
             .disposed(by: disposeBag)
+        
+        self.searchPokemonUseCase.pokeList
+            .map(mapToPokeListItems)
+            .bind(to: output.items)
+            .disposed(by: disposeBag)
+       
         return output
     }
-    
 }
 
 extension PokeListViewModel {
@@ -59,5 +74,14 @@ extension PokeListViewModel {
         var components = urlString.components(separatedBy: "/")
         components.removeLast()
         return components.last!
+    }
+    
+    func mapToPokeListItems(pokemons: [Pokemon]) -> [PokeListItem] {
+        return pokemons.map {
+            PokeListItem(
+                number: extractPokemonNumber(from: $0.url),
+                title: $0.name
+            )
+        }
     }
 }

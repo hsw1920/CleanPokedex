@@ -7,26 +7,34 @@
 
 import UIKit
 
+protocol PokeSearchFlowCoordinatorDelegate {
+    func didFinish(_ child: Coordinator)
+}
+
 final class PokeSearchFlowCoordinator: Coordinator {
     var navigationController: UINavigationController
     
     var childCoordinator: [Coordinator] = []
     
-    private weak var moviesListVC: PokeListViewController?
+    weak var delegate: AppCoordinator?
+    
+    private weak var pokeListVC: PokeListViewController?
     
     init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
+    }
+    
+    deinit{
+        print("deinit - \(self)")
     }
     
     func start() {
         let service = PokemonService()
         let repository = PokemonRepositoryImp(pokemonService: service)
         let usecase = SearchPokemonUseCaseImp(pokemonRepository: repository)
-        let viewModel = PokeListViewModel(searchPokemonUseCase: usecase)
-        let vc = PokeListViewController.create(with: viewModel)
-        
-        navigationController.pushViewController(vc, animated: false)
-        
+        let viewModel = PokeListViewModel(coordinator: self, searchPokemonUseCase: usecase)
+        pokeListVC = PokeListViewController.create(with: viewModel)
+        navigationController.pushViewController(pokeListVC ?? PokeListViewController(), animated: false)
     }
 
 }

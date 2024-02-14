@@ -10,32 +10,38 @@ import RxSwift
 import RxCocoa
 
 protocol SearchPokemonUseCase {
-    func fetchPokemonList() -> Observable<[Pokemon]>
+    func fetchPokemonList()
+    func filterPokemonList(with searchText: String) -> Observable<[Pokemon]>
+    var pokeList: BehaviorRelay<[Pokemon]> { get set }
 }
 
 final class SearchPokemonUseCaseImp: SearchPokemonUseCase {
-
+    private let disposeBag = DisposeBag()
+    
     // MARK: - 의존성 주입
     private let pokemonRepository: PokemonRepository
+    var pokeList: BehaviorRelay<[Pokemon]> = BehaviorRelay(value: [])
     
     init(pokemonRepository: PokemonRepository) {
         self.pokemonRepository = pokemonRepository
     }
-    //private let pokemonQueriesRepository: PokemonQueriesRepository
     
-    // PokemonRepository에서 ~~ 함
-    // PokemonQueriesRepository에서 ~~ 함
-    
-    func fetchPokemonList() -> Observable<[Pokemon]> {
-        return pokemonRepository.fetchPokemonList()
+    func fetchPokemonList() {
+        pokemonRepository.fetchPokemonList()
+            .subscribe(onNext: { [weak self] items in
+                self?.pokeList.accept(items)
+            })
+            .disposed(by: disposeBag)
     }
     
-//    func execute() -> Observable<Void> {
-//        return BehaviorRelay.create { observer in
-//            print("zzz")
-//            return Disposables.create()
-//        }
-//    }
-    
-    
+    func filterPokemonList(with searchText: String) -> Observable<[Pokemon]> {
+        return pokeList
+            .map { pokemons in
+                if searchText.isEmpty {
+                    return pokemons
+                } else {
+                    return pokemons.filter { $0.name.contains(searchText) }
+                }
+            }
+    }
 }
