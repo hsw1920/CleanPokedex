@@ -11,16 +11,21 @@ import RxCocoa
 
 protocol SearchPokemonUseCase {
     func fetchPokemonList()
+    func fetchPokemonImage()
     func filterPokemonList(with searchText: String) -> Observable<[Pokemon]>
-    var pokeList: BehaviorRelay<[Pokemon]> { get set }
+    var pokeList: BehaviorRelay<[Pokemon]> { get }
+    var pokeImgList: BehaviorRelay<[PokemonSprite]> { get }
 }
 
 final class SearchPokemonUseCaseImp: SearchPokemonUseCase {
+    
+    
     private let disposeBag = DisposeBag()
     
     // MARK: - 의존성 주입
     private let pokemonRepository: PokemonRepository
     var pokeList: BehaviorRelay<[Pokemon]> = BehaviorRelay(value: [])
+    var pokeImgList: BehaviorRelay<[PokemonSprite]> = BehaviorRelay(value: [])
     
     init(pokemonRepository: PokemonRepository) {
         self.pokemonRepository = pokemonRepository
@@ -30,6 +35,7 @@ final class SearchPokemonUseCaseImp: SearchPokemonUseCase {
         pokemonRepository.fetchPokemonList()
             .subscribe(onNext: { [weak self] items in
                 self?.pokeList.accept(items)
+                self?.fetchPokemonImage()
             })
             .disposed(by: disposeBag)
     }
@@ -43,5 +49,12 @@ final class SearchPokemonUseCaseImp: SearchPokemonUseCase {
                     return pokemons.filter { $0.name.contains(searchText) }
                 }
             }
+    }
+    
+    func fetchPokemonImage() {
+        pokemonRepository.fetchPokeImgUrls()
+            .debounce(.seconds(1), scheduler: MainScheduler.asyncInstance)
+            .bind(to: pokeImgList)
+            .disposed(by: disposeBag)
     }
 }

@@ -11,8 +11,10 @@ import RxSwift
 
 final class PokemonRepositoryImp {
     private let pokemonService: PokemonService
-
-    init(pokemonService: PokemonService) {
+    private var pokeImgUrls: [String] = []
+    init(
+        pokemonService: PokemonService
+    ) {
         self.pokemonService = pokemonService
     }
 }
@@ -20,6 +22,10 @@ final class PokemonRepositoryImp {
 extension PokemonRepositoryImp: PokemonRepository {
     func fetchPokemonList() -> Observable<[Pokemon]> {
         return pokemonService.fetchPokemons()
+    }
+    
+    func fetchPokeImgUrls() -> Observable<[PokemonSprite]> {
+        return pokemonService.imageUrls.asObservable()
     }
 }
 

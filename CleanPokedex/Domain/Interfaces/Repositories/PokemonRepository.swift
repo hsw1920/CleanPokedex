@@ -10,4 +10,5 @@ import RxSwift
 
 protocol PokemonRepository {
     func fetchPokemonList() -> Observable<[Pokemon]>
+    func fetchPokeImgUrls() -> Observable<[PokemonSprite]>
 }

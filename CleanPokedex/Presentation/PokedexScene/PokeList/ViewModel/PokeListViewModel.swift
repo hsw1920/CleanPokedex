@@ -54,7 +54,7 @@ final class PokeListViewModel {
         input.searchBarTextEvent
             .withUnretained(self)
             .flatMapLatest { owner, text in
-                owner.searchPokemonUseCase.filterPokemonList(with: text)
+                return owner.searchPokemonUseCase.filterPokemonList(with: text)
                     .map(owner.mapToPokeListItems)
             }
             .bind(to: output.items)
@@ -65,6 +65,12 @@ final class PokeListViewModel {
             .bind(to: output.items)
             .disposed(by: disposeBag)
        
+        searchPokemonUseCase.pokeImgList
+            .subscribe(onNext: { item in
+                print(item)
+            })
+            .disposed(by: disposeBag)
+        
         return output
     }
 }
