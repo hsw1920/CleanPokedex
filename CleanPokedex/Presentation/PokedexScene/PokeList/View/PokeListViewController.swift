@@ -37,9 +37,8 @@ final class PokeListViewController: UIViewController {
     }
     
     private func setupTableView() {
-        
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.estimatedRowHeight = 0
+        tableView.estimatedRowHeight = 300
         tableView.rowHeight = UITableView.automaticDimension
         tableView.register(PokeListItemCell.self,
                            forCellReuseIdentifier: PokeListItemCell.reuseIdentifier)
