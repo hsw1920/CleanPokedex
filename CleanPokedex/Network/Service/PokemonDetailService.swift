@@ -64,6 +64,9 @@ protocol PokemonDetailServiceProtocol {
 
 class PokemonDetailService: PokemonDetailServiceProtocol {
 
+    deinit {
+        print("deinit - \(self)")
+    }
     var disposeBag = DisposeBag()
 
     let baseURL = "https://pokeapi.co/api/v2/pokemon/"
