@@ -9,10 +9,6 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-protocol PokeListViewControllerDelegate {
-    func didTapDetailCell(with index: Int)
-}
-
 final class PokeListViewController: UIViewController {
     private var searchController = UISearchController(searchResultsController: nil)
     private let tableView: UITableView = UITableView(frame: .zero)
@@ -60,7 +56,8 @@ final class PokeListViewController: UIViewController {
     private func bind(to viewModel: PokeListViewModel){
         let input = PokeListViewModel.Input( 
             viewWillAppear: self.rx.methodInvoked(#selector(UIViewController.viewWillAppear)).map { _ in },
-            searchBarTextEvent: self.searchController.searchBar.rx.text.orEmpty.asObservable()
+            searchBarTextEvent: self.searchController.searchBar.rx.text.orEmpty.asObservable(), 
+            didTapDetailCell: self.tableView.rx.itemSelected.asObservable()
         )
         let output = viewModel.transform(input: input)
         

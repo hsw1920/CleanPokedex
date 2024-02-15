@@ -9,11 +9,16 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+protocol PokeListViewDelegate {
+    func didTapDetailCell(with id: String)
+}
+
 final class PokeListViewModel {
     
     struct Input {
         let viewWillAppear: Observable<Void>
         let searchBarTextEvent: Observable<String>
+        let didTapDetailCell: Observable<IndexPath>
     }
 
     struct Output {
@@ -57,6 +62,13 @@ final class PokeListViewModel {
                 return owner.searchPokemonUseCase.filterPokemonList(with: text)
             }
             .bind(to: output.items)
+            .disposed(by: disposeBag)
+        
+        input.didTapDetailCell
+            .withUnretained(self)
+            .subscribe(onNext: { owner, indexPath in
+                owner.coordinator?.didTapDetailCell(with: output.items.value[indexPath.row].number)
+            })
             .disposed(by: disposeBag)
 
         return output

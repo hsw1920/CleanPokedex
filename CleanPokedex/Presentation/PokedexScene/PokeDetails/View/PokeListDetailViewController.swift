@@ -21,10 +21,15 @@ final class PokeListDetailViewController: UIViewController {
         return view
     }
     
+    deinit {
+        print("deinit - \(self)")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupViews()
+        bind(to: viewModel)
     }
     
     private func setupViews(){
@@ -32,7 +37,7 @@ final class PokeListDetailViewController: UIViewController {
 
     }
     
-    private func bind(to viewModel: PokeListViewModel) {
+    private func bind(to viewModel: PokeListDetailViewModel) {
         
     }
     

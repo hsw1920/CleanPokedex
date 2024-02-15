@@ -21,7 +21,7 @@ struct Pokemon: Decodable {
     let url: String
 }
 
-struct PokemonDetailResponse: Decodable {
+struct PokemonSpritesResponse: Decodable {
     let sprites: PokemonSprite
     
     enum CodingKeys: String, CodingKey {
@@ -48,7 +48,6 @@ class PokemonService: PokemonServiceProtocol {
     
     let url = "https://pokeapi.co/api/v2/pokemon/"
 
-    
     func fetchPokemons() -> Observable<[Pokemon]> {
         return Observable.create { observer in
             if let url = URL(string: self.url) {
@@ -95,7 +94,7 @@ class PokemonService: PokemonServiceProtocol {
                         observer.onError(error)
                     } else if let data = data {
                         do {
-                            let pokemons = try JSONDecoder().decode(PokemonDetailResponse.self, from: data)
+                            let pokemons = try JSONDecoder().decode(PokemonSpritesResponse.self, from: data)
                             observer.onNext(pokemons.sprites)
                             observer.onCompleted()
                         } catch {
@@ -108,9 +107,6 @@ class PokemonService: PokemonServiceProtocol {
             
             return Disposables.create()
         }
-        
-        
     }
-    
     
 }
