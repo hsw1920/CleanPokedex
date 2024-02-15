@@ -60,19 +60,7 @@ class PokemonService: PokemonServiceProtocol {
                         do {
                             let pokemons = try JSONDecoder().decode(PokemonResponse.self, from: data)
                             observer.onNext(pokemons.results)
-                            
                             let urls = pokemons.results.map{$0.url}
-//                            urls.forEach {
-//                                self.loadPokeImage($0)
-//                                    .map { [weak self] item in
-//                                        guard let self = self else { return [] }
-//                                        var images = self.imageUrls.value
-//                                        images.append(item)
-//                                        return images
-//                                    }
-//                                    .bind(to: self.imageUrls)
-//                                    .disposed(by: self.disposeBag)
-//                            }
                             
                             Observable.from(urls)
                                 .flatMap { url in
@@ -83,7 +71,7 @@ class PokemonService: PokemonServiceProtocol {
                                 }
                                 .bind(to: self.imageUrls)
                                 .disposed(by: self.disposeBag)
-
+                            
                             observer.onCompleted()
                         } catch {
                             print(">>> Error - \(self): \n \(error.localizedDescription) ")

@@ -55,39 +55,10 @@ final class PokeListViewModel {
             .withUnretained(self)
             .flatMapLatest { owner, text in
                 return owner.searchPokemonUseCase.filterPokemonList(with: text)
-                    .map(owner.mapToPokeListItems)
             }
             .bind(to: output.items)
             .disposed(by: disposeBag)
-        
-        self.searchPokemonUseCase.pokeList
-            .map(mapToPokeListItems)
-            .bind(to: output.items)
-            .disposed(by: disposeBag)
-       
-        searchPokemonUseCase.pokeImgList
-            .subscribe(onNext: { item in
-                print(item)
-            })
-            .disposed(by: disposeBag)
-        
-        return output
-    }
-}
 
-extension PokeListViewModel {
-    func extractPokemonNumber(from urlString: String) -> String {
-        var components = urlString.components(separatedBy: "/")
-        components.removeLast()
-        return components.last!
-    }
-    
-    func mapToPokeListItems(pokemons: [Pokemon]) -> [PokeListItem] {
-        return pokemons.map {
-            PokeListItem(
-                number: extractPokemonNumber(from: $0.url),
-                title: $0.name
-            )
-        }
+        return output
     }
 }

@@ -11,21 +11,18 @@ import RxCocoa
 
 protocol SearchPokemonUseCase {
     func fetchPokemonList()
-    func fetchPokemonImage()
-    func filterPokemonList(with searchText: String) -> Observable<[Pokemon]>
-    var pokeList: BehaviorRelay<[Pokemon]> { get }
-    var pokeImgList: BehaviorRelay<[PokemonSprite]> { get }
+    func filterPokemonList(with searchText: String) -> Observable<[PokeListItem]>
 }
 
 final class SearchPokemonUseCaseImp: SearchPokemonUseCase {
-    
-    
-    private let disposeBag = DisposeBag()
-    
-    // MARK: - 의존성 주입
+
+    // MARK: - Properties
     private let pokemonRepository: PokemonRepository
-    var pokeList: BehaviorRelay<[Pokemon]> = BehaviorRelay(value: [])
-    var pokeImgList: BehaviorRelay<[PokemonSprite]> = BehaviorRelay(value: [])
+    
+    private let pokeList: BehaviorRelay<[Pokemon]> = BehaviorRelay<[Pokemon]>(value: [])
+    private let pokeImgList: BehaviorRelay<[PokemonSprite]> = BehaviorRelay<[PokemonSprite]>(value: [])
+    private let pokeItems: BehaviorRelay<[PokeListItem]> = BehaviorRelay<[PokeListItem]>(value: [])
+    private let disposeBag = DisposeBag()
     
     init(pokemonRepository: PokemonRepository) {
         self.pokemonRepository = pokemonRepository
@@ -33,28 +30,50 @@ final class SearchPokemonUseCaseImp: SearchPokemonUseCase {
     
     func fetchPokemonList() {
         pokemonRepository.fetchPokemonList()
-            .subscribe(onNext: { [weak self] items in
-                self?.pokeList.accept(items)
-                self?.fetchPokemonImage()
-            })
+            .bind(to: pokeList)
             .disposed(by: disposeBag)
-    }
-    
-    func filterPokemonList(with searchText: String) -> Observable<[Pokemon]> {
-        return pokeList
-            .map { pokemons in
-                if searchText.isEmpty {
-                    return pokemons
-                } else {
-                    return pokemons.filter { $0.name.contains(searchText) }
-                }
-            }
-    }
-    
-    func fetchPokemonImage() {
+        
         pokemonRepository.fetchPokeImgUrls()
             .debounce(.seconds(1), scheduler: MainScheduler.asyncInstance)
             .bind(to: pokeImgList)
             .disposed(by: disposeBag)
+        
+        Observable.zip(pokeList, pokeImgList)
+            .map(mapToPokeListItems)
+            .bind(to: pokeItems)
+            .disposed(by: disposeBag)
+    }
+    
+    func filterPokemonList(with searchText: String) -> Observable<[PokeListItem]> {
+        if searchText.isEmpty {
+            return pokeItems.asObservable()
+        }
+        
+        return pokeItems.map { items in
+            items.filter { item in
+                return item.title.contains(searchText)
+            }
+        }
+    }
+}
+
+extension SearchPokemonUseCase {
+    func extractPokemonNumber(from urlString: String) -> String {
+        var components = urlString.components(separatedBy: "/")
+        components.removeLast()
+        return components.last!
+    }
+    
+    func mapToPokeListItems(pokemons: [Pokemon], images: [PokemonSprite]) -> [PokeListItem] {
+        guard pokemons.count == images.count else { return [] }
+        
+        return pokemons.enumerated()
+            .map { idx, item in
+                PokeListItem(
+                    number: extractPokemonNumber(from: item.url),
+                    title: item.name,
+                    imageUrl: images[idx]
+                )
+            }
     }
 }

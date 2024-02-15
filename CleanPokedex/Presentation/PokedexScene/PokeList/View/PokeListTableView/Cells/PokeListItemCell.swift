@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class PokeListItemCell: UITableViewCell {
     static let reuseIdentifier = String(describing: PokeListItemCell.self)
@@ -63,5 +64,8 @@ final class PokeListItemCell: UITableViewCell {
     func configure(item: PokeListItem){
         numberLabel.text = item.number
         titleLabel.text = item.title
+    
+        pokeImageView.kf.setImage(with: URL(string: item.imageUrl.default))
+//        pokeImageView.kf.setImage(with: URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/35.png"))
     }
 }
