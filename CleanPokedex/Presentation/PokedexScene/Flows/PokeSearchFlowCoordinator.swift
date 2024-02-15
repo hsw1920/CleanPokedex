@@ -19,6 +19,7 @@ final class PokeSearchFlowCoordinator: Coordinator {
     weak var delegate: AppCoordinator?
     
     private weak var pokeListVC: PokeListViewController?
+    private weak var pokeListDetailVC: PokeListDetailViewController?
     
     init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -34,7 +35,16 @@ final class PokeSearchFlowCoordinator: Coordinator {
         let usecase = SearchPokemonUseCaseImp(pokemonRepository: repository)
         let viewModel = PokeListViewModel(coordinator: self, searchPokemonUseCase: usecase)
         pokeListVC = PokeListViewController.create(with: viewModel)
-        navigationController.pushViewController(pokeListVC ?? PokeListViewController(), animated: false)
+        navigationController.pushViewController(pokeListVC!, animated: false)
     }
 
+}
+
+extension PokeSearchFlowCoordinator: PokeListViewControllerDelegate {
+    func didTapDetailCell(with index: Int) {
+        print("index: \(index)")
+        let viewModel = PokeListDetailViewModel()
+        pokeListDetailVC = PokeListDetailViewController.create(with: viewModel)
+        navigationController.pushViewController(pokeListDetailVC!, animated: true)
+    }
 }

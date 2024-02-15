@@ -9,6 +9,10 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+protocol PokeListViewControllerDelegate {
+    func didTapDetailCell(with index: Int)
+}
+
 final class PokeListViewController: UIViewController {
     private var searchController = UISearchController(searchResultsController: nil)
     private let tableView: UITableView = UITableView(frame: .zero)
