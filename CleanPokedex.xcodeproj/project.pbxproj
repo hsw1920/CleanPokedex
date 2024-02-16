@@ -103,9 +103,7 @@
 				6015A1F72B79E43400E9D879 /* Domain */,
 				6015A1DC2B78FC2D00E9D879 /* Presentation */,
 				6015A1DB2B78FC2100E9D879 /* Application */,
-				6015A1D02B78FB9C00E9D879 /* Assets.xcassets */,
-				6015A1D22B78FB9C00E9D879 /* LaunchScreen.storyboard */,
-				6015A1D52B78FB9C00E9D879 /* Info.plist */,
+				60C950042B7F886300DCC19D /* Resource */,
 			);
 			path = CleanPokedex;
 			sourceTree = "<group>";
@@ -308,6 +306,16 @@
 				60C950012B7F2DEB00DCC19D /* PokeDetail.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		60C950042B7F886300DCC19D /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				6015A1D02B78FB9C00E9D879 /* Assets.xcassets */,
+				6015A1D22B78FB9C00E9D879 /* LaunchScreen.storyboard */,
+				6015A1D52B78FB9C00E9D879 /* Info.plist */,
+			);
+			path = Resource;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
