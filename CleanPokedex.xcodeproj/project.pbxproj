@@ -311,9 +311,9 @@
 		60C950042B7F886300DCC19D /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				6015A1D52B78FB9C00E9D879 /* Info.plist */,
 				6015A1D02B78FB9C00E9D879 /* Assets.xcassets */,
 				6015A1D22B78FB9C00E9D879 /* LaunchScreen.storyboard */,
-				6015A1D52B78FB9C00E9D879 /* Info.plist */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -564,7 +564,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3NP4Z3WZ94;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = CleanPokedex/Info.plist;
+				INFOPLIST_FILE = CleanPokedex/Resource/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -591,7 +591,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3NP4Z3WZ94;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = CleanPokedex/Info.plist;
+				INFOPLIST_FILE = CleanPokedex/Resource/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";

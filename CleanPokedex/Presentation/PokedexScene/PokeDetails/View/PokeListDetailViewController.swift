@@ -58,6 +58,7 @@ final class PokeListDetailViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
         stackView.distribution = .equalCentering
+        stackView.spacing = 24
         return stackView
     }()
     
@@ -66,7 +67,7 @@ final class PokeListDetailViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
         stackView.distribution = .equalCentering
-        stackView.spacing = 2
+        stackView.spacing = 4
         return stackView
     }()
     
@@ -106,7 +107,6 @@ final class PokeListDetailViewController: UIViewController {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
-        stackView.spacing = 10
         stackView.distribution = .equalCentering
         return stackView
     }()
@@ -204,15 +204,15 @@ final class PokeListDetailViewController: UIViewController {
             stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 100)
         ])
         
-        idLabel.text = "ID:"
-        nameLabel.text = "NAME:"
-        hpLabel.text = "HP:"
-        attackLabel.text = "ATTACK:"
-        defenseLabel.text = "DEFENSE:"
-        specialAttackLabel.text = "SPECIAL-ATTACK:"
-        specialDefenseLabel.text = "SPECIAL-DEFENSE:"
-        speedLabel.text = "SPEED:"
-        typeLabel.text = "TYPES:"
+        idLabel.text = "도감번호"
+        nameLabel.text = "이름"
+        hpLabel.text = "체력"
+        attackLabel.text = "공격"
+        defenseLabel.text = "방어"
+        specialAttackLabel.text = "특수공격"
+        specialDefenseLabel.text = "특수방어"
+        speedLabel.text = "스피드"
+        typeLabel.text = "타입"
     }
     
     private func bind(to viewModel: PokeListDetailViewModel) {
