@@ -8,11 +8,13 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import Kingfisher
 
 final class PokeListDetailViewController: UIViewController {
     
     private lazy var pokemonImageView: UIImageView = {
         let imgView = UIImageView(image: .none)
+        imgView.translatesAutoresizingMaskIntoConstraints = false
         return imgView
     }()
     
@@ -24,6 +26,7 @@ final class PokeListDetailViewController: UIViewController {
     private let specialAttackLabel: UILabel = UILabel()
     private let specialDefenseLabel: UILabel = UILabel()
     private let speedLabel: UILabel = UILabel()
+    private let typeLabel: UILabel = UILabel()
     
     private lazy var id: UILabel = UILabel()
     private lazy var name: UILabel = UILabel()
@@ -47,6 +50,23 @@ final class PokeListDetailViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
         stackView.distribution = .equalCentering
+        return stackView
+    }()
+    
+    private let typesStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .horizontal
+        stackView.distribution = .equalCentering
+        return stackView
+    }()
+    
+    private let typesDataStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .horizontal
+        stackView.distribution = .equalCentering
+        stackView.spacing = 2
         return stackView
     }()
     
@@ -141,6 +161,10 @@ final class PokeListDetailViewController: UIViewController {
             nameStackView.addArrangedSubview($0)
         }
         
+        [typeLabel, typesDataStackView].forEach {
+            typesStackView.addArrangedSubview($0)
+        }
+        
         [hpLabel, hp].forEach {
             hpStackView.addArrangedSubview($0)
         }
@@ -163,15 +187,21 @@ final class PokeListDetailViewController: UIViewController {
             speedStackView.addArrangedSubview($0)
         }
         
-        [idStackView, nameStackView, hpStackView, attackStackView, defenseStackView, specialAttackStackView, specialDepensestackView, speedStackView].forEach {
+        [idStackView, nameStackView, typesStackView, hpStackView, attackStackView, defenseStackView, specialAttackStackView, specialDepensestackView, speedStackView].forEach {
             stackView.addArrangedSubview($0)
         }
         
+        view.addSubview(pokemonImageView)
         view.addSubview(stackView)
         
         NSLayoutConstraint.activate([
+            pokemonImageView.heightAnchor.constraint(equalToConstant: 200),
+            pokemonImageView.widthAnchor.constraint(equalToConstant: 200),
+            pokemonImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            pokemonImageView.bottomAnchor.constraint(equalTo: stackView.topAnchor, constant: -16),
+            
             stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 100)
         ])
         
         idLabel.text = "ID:"
@@ -182,10 +212,13 @@ final class PokeListDetailViewController: UIViewController {
         specialAttackLabel.text = "SPECIAL-ATTACK:"
         specialDefenseLabel.text = "SPECIAL-DEFENSE:"
         speedLabel.text = "SPEED:"
+        typeLabel.text = "TYPES:"
     }
     
     private func bind(to viewModel: PokeListDetailViewModel) {
-        let input = PokeListDetailViewModel.Input()
+        let input = PokeListDetailViewModel.Input(
+            viewWillAppear: self.rx.methodInvoked(#selector(UIViewController.viewWillAppear)).map { _ in }
+        )
         let output = viewModel.transform(input: input)
         
         output.screenTitle
@@ -216,13 +249,33 @@ final class PokeListDetailViewController: UIViewController {
             .bind(to: specialAttack.rx.text)
             .disposed(by: disposeBag)
         
-        
         output.specialDefense
             .bind(to: specialDefense.rx.text)
             .disposed(by: disposeBag)
         
-        output.spped
+        output.speed
             .bind(to: speed.rx.text)
+            .disposed(by: disposeBag)
+        
+        output.image
+            .observe(on: MainScheduler.instance)
+            .withUnretained(self)
+            .bind(onNext: { owner, image in
+                guard let url = URL(string: image) else { return }
+                owner.pokemonImageView.kf.setImage(with: url)
+            })
+            .disposed(by: disposeBag)
+        
+        output.types
+            .observe(on: MainScheduler.instance)
+            .bind(onNext: { [weak self] types in
+                guard let self = self else { return }
+                types.forEach { item in
+                    let label = UILabel()
+                    label.text = item
+                    self.typesDataStackView.addArrangedSubview(label)
+                }
+            })
             .disposed(by: disposeBag)
     }
 

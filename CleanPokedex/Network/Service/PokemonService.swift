@@ -42,7 +42,7 @@ protocol PokemonServiceProtocol {
     var imageUrls: BehaviorRelay<[PokemonSprite]> { get }
 }
 
-class PokemonService: PokemonServiceProtocol {
+final class PokemonService: PokemonServiceProtocol {
     var disposeBag = DisposeBag()
     var imageUrls: BehaviorRelay<[PokemonSprite]> = BehaviorRelay<[PokemonSprite]>(value: [])
     

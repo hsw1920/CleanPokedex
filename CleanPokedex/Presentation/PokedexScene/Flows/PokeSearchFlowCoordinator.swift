@@ -34,7 +34,6 @@ final class PokeSearchFlowCoordinator: Coordinator {
         let repository = PokemonRepositoryImp(pokemonService: service)
         let usecase = SearchPokemonUseCaseImp(pokemonRepository: repository)
         let viewModel = PokeListViewModel(coordinator: self, searchPokemonUseCase: usecase)
-        print("begin \(pokeListVC)")
         pokeListVC = PokeListViewController.create(with: viewModel)
         
         navigationController.pushViewController(pokeListVC!, animated: false)
@@ -44,8 +43,10 @@ final class PokeSearchFlowCoordinator: Coordinator {
 
 extension PokeSearchFlowCoordinator: PokeListViewDelegate {
     func didTapDetailCell(with id: String) {
-        print("id: \(id)")
-        let viewModel = PokeListDetailViewModel(id: id)
+        let service = PokemonDetailService(with: id)
+        let repository = PokemonDetailRepositoryImp(pokemonDetailService: service)
+        let useCase = PokemonDetailUseCaseImp(pokemonDetailRepository: repository)
+        let viewModel = PokeListDetailViewModel(pokeDetailUseCase: useCase)
         let detailVC = PokeListDetailViewController.create(with: viewModel)
 
         navigationController.pushViewController(detailVC, animated: true)
