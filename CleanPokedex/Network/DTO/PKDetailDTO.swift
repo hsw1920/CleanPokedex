@@ -7,12 +7,12 @@
 
 import Foundation
 
-struct PokemonDetailResponse: Decodable {
+struct PKDetailResponseDTO: Decodable {
     let id: Int
     let name: String
-    let sprites: PokemonSprite
-    let types: [PokemonTypes]
-    let stats: [PokemonStats]
+    let sprites: PKSpriteItemResponseDTO
+    let types: [PKTypeSlotResponseDTO]
+    let stats: [PKStatResponseDTO]
     
     enum CodingKeys: CodingKey {
         case id

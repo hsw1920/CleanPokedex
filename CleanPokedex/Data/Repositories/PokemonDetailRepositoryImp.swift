@@ -23,7 +23,7 @@ final class PokemonDetailRepositoryImp {
 }
 
 extension PokemonDetailRepositoryImp: PokemonDetailRepository {
-    func fetchPokemonDetail() -> Observable<PokemonDetailResponse> {
+    func fetchPokemonDetail() -> Observable<PKDetailResponseDTO> {
         return pokemonDetailService.fetchPokemonDetail()
     }
 }

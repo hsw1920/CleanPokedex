@@ -10,7 +10,7 @@ import Foundation
 struct PokeListItem {
     let number: String
     let title: String
-    let imageUrl: PokemonSprite
+    let imageUrl: PKSpriteItemResponseDTO
     
     static let mock: [PokeListItem] = [
         PokeListItem(number: "1", title: "이상해씨", imageUrl: .init(default: "")),

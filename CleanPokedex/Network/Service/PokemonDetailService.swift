@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 
 protocol PokemonDetailServiceProtocol {
-    func fetchPokemonDetail() -> Observable<PokemonDetailResponse>
+    func fetchPokemonDetail() -> Observable<PKDetailResponseDTO>
 }
 
 final class PokemonDetailService: PokemonDetailServiceProtocol {
@@ -28,7 +28,7 @@ final class PokemonDetailService: PokemonDetailServiceProtocol {
         self.id = id
     }
     
-    func fetchPokemonDetail() -> Observable<PokemonDetailResponse> {
+    func fetchPokemonDetail() -> Observable<PKDetailResponseDTO> {
         guard let url = URL(string: "\(baseURL+id)") else {
             return Observable.error(URLError.init(.unsupportedURL))
         }
@@ -40,7 +40,7 @@ final class PokemonDetailService: PokemonDetailServiceProtocol {
                     observer.onError(error)
                 } else if let data {
                     do {
-                        let pokemons = try JSONDecoder().decode(PokemonDetailResponse.self, from: data)
+                        let pokemons = try JSONDecoder().decode(PKDetailResponseDTO.self, from: data)
                         observer.onNext(pokemons)
                         observer.onCompleted()
                     } catch {

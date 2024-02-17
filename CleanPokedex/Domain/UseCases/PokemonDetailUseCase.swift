@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 
 protocol PokemonDetailUseCase {
-    func fetchPokeDetail() -> Observable<PokemonDetailResponse>
+    func fetchPokeDetail() -> Observable<PKDetailResponseDTO>
 }
 
 final class PokemonDetailUseCaseImp {
@@ -28,7 +28,7 @@ final class PokemonDetailUseCaseImp {
 }
 
 extension PokemonDetailUseCaseImp: PokemonDetailUseCase {
-    func fetchPokeDetail() -> Observable<PokemonDetailResponse> {
+    func fetchPokeDetail() -> Observable<PKDetailResponseDTO> {
         return pokemonDetailRepository.fetchPokemonDetail()
     }
 }

@@ -19,8 +19,8 @@ final class SearchPokemonUseCaseImp: SearchPokemonUseCase {
     // MARK: - Properties
     private let pokemonRepository: PokemonRepository
     
-    private let pokeList: BehaviorRelay<[Pokemon]> = BehaviorRelay<[Pokemon]>(value: [])
-    private let pokeImgList: BehaviorRelay<[PokemonSprite]> = BehaviorRelay<[PokemonSprite]>(value: [])
+    private let pokeList: BehaviorRelay<[PKContentResponseDTO]> = BehaviorRelay<[PKContentResponseDTO]>(value: [])
+    private let pokeImgList: BehaviorRelay<[PKSpriteItemResponseDTO]> = BehaviorRelay<[PKSpriteItemResponseDTO]>(value: [])
     private let pokeItems: BehaviorRelay<[PokeListItem]> = BehaviorRelay<[PokeListItem]>(value: [])
     private let disposeBag = DisposeBag()
     
@@ -64,7 +64,7 @@ extension SearchPokemonUseCase {
         return components.last!
     }
     
-    func mapToPokeListItems(pokemons: [Pokemon], images: [PokemonSprite]) -> [PokeListItem] {
+    func mapToPokeListItems(pokemons: [PKContentResponseDTO], images: [PKSpriteItemResponseDTO]) -> [PokeListItem] {
         guard pokemons.count == images.count else { return [] }
         
         return pokemons.enumerated()

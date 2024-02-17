@@ -7,9 +7,9 @@
 
 import Foundation
 
-struct PokemonTypes: Decodable {
+struct PKTypeSlotResponseDTO: Decodable {
     let slot: Int
-    let type: PokemonType
+    let type: PKTypeResponseDTO
     
     enum CodingKeys: CodingKey {
         case slot
@@ -17,7 +17,7 @@ struct PokemonTypes: Decodable {
     }
 }
 
-struct PokemonType: Decodable {
+struct PKTypeResponseDTO: Decodable {
     let name: String
     enum CodingKeys: CodingKey {
         case name

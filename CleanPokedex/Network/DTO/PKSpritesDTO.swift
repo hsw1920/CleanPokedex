@@ -7,15 +7,15 @@
 
 import Foundation
 
-struct PokemonSpritesResponse: Decodable {
-    let sprites: PokemonSprite
+struct PKSpritesResponseDTO: Decodable {
+    let sprites: PKSpriteItemResponseDTO
     
     enum CodingKeys: String, CodingKey {
         case sprites
     }
 }
 
-struct PokemonSprite: Decodable {
+struct PKSpriteItemResponseDTO: Decodable {
     let `default`: String
     enum CodingKeys: String, CodingKey {
         case `default` = "front_default"

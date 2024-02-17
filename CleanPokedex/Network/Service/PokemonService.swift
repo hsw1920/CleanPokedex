@@ -10,18 +10,18 @@ import RxSwift
 import RxCocoa
 
 protocol PokemonServiceProtocol {
-    func fetchPokemons() -> Observable<[Pokemon]>
-    func loadPokeImage(_ urlString: String) -> Observable<PokemonSprite>
-    var imageUrls: BehaviorRelay<[PokemonSprite]> { get }
+    func fetchPokemons() -> Observable<[PKContentResponseDTO]>
+    func loadPokeImage(_ urlString: String) -> Observable<PKSpriteItemResponseDTO>
+    var imageUrls: BehaviorRelay<[PKSpriteItemResponseDTO]> { get }
 }
 
 final class PokemonService: PokemonServiceProtocol {
     var disposeBag = DisposeBag()
-    var imageUrls: BehaviorRelay<[PokemonSprite]> = BehaviorRelay<[PokemonSprite]>(value: [])
+    var imageUrls: BehaviorRelay<[PKSpriteItemResponseDTO]> = BehaviorRelay<[PKSpriteItemResponseDTO]>(value: [])
     
     let url = "https://pokeapi.co/api/v2/pokemon/"
 
-    func fetchPokemons() -> Observable<[Pokemon]> {
+    func fetchPokemons() -> Observable<[PKContentResponseDTO]> {
         return Observable.create { observer in
             if let url = URL(string: self.url) {
                 URLSession.shared.dataTask(with: url) { data, response, error in
@@ -30,7 +30,7 @@ final class PokemonService: PokemonServiceProtocol {
                         observer.onError(error)
                     } else if let data = data {
                         do {
-                            let pokemons = try JSONDecoder().decode(PokemonResponse.self, from: data)
+                            let pokemons = try JSONDecoder().decode(PKListResponseDTO.self, from: data)
                             observer.onNext(pokemons.results)
                             let urls = pokemons.results.map{$0.url}
                             
@@ -56,7 +56,7 @@ final class PokemonService: PokemonServiceProtocol {
         }
     }
     
-    func loadPokeImage(_ urlString: String) -> Observable<PokemonSprite> {
+    func loadPokeImage(_ urlString: String) -> Observable<PKSpriteItemResponseDTO> {
         let url = URL(string: urlString)
         
         return Observable.create { observer in
@@ -67,7 +67,7 @@ final class PokemonService: PokemonServiceProtocol {
                         observer.onError(error)
                     } else if let data = data {
                         do {
-                            let pokemons = try JSONDecoder().decode(PokemonSpritesResponse.self, from: data)
+                            let pokemons = try JSONDecoder().decode(PKSpritesResponseDTO.self, from: data)
                             observer.onNext(pokemons.sprites)
                             observer.onCompleted()
                         } catch {

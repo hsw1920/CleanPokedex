@@ -71,7 +71,7 @@ extension PokeListDetailViewModel {
             .disposed(by: disposeBag)
     }
     
-    func mapToPokeDetail(_ response: PokemonDetailResponse) -> PokeDetail {
+    func mapToPokeDetail(_ response: PKDetailResponseDTO) -> PokeDetail {
         return PokeDetail(
             name: response.name,
             id: "\(response.id)",

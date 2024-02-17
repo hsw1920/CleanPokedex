@@ -20,11 +20,11 @@ final class PokemonRepositoryImp {
 }
 
 extension PokemonRepositoryImp: PokemonRepository {
-    func fetchPokemonList() -> Observable<[Pokemon]> {
+    func fetchPokemonList() -> Observable<[PKContentResponseDTO]> {
         return pokemonService.fetchPokemons()
     }
     
-    func fetchPokeImgUrls() -> Observable<[PokemonSprite]> {
+    func fetchPokeImgUrls() -> Observable<[PKSpriteItemResponseDTO]> {
         return pokemonService.imageUrls.asObservable()
     }
 }

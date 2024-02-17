@@ -7,16 +7,16 @@
 
 import Foundation
 
-struct PokemonStats: Decodable {
+struct PKStatResponseDTO: Decodable {
     let baseStat: Int
-    let stat: PokemonStat
+    let stat: PKStatDetailResponseDTO
     enum CodingKeys: String, CodingKey {
         case baseStat = "base_stat"
         case stat
     }
 }
 
-struct PokemonStat: Decodable {
+struct PKStatDetailResponseDTO: Decodable {
     let name: String
     enum CodingKeys: CodingKey {
         case name
