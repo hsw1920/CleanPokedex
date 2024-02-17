@@ -61,7 +61,7 @@ final class PokeListItemCell: UITableViewCell {
         ])
     }
 
-    func configure(item: PokeListItem){
+    func configure(item: PKListItem){
         numberLabel.text = item.number
         titleLabel.text = item.title
     

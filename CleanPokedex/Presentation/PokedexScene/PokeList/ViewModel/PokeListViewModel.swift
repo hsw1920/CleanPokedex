@@ -23,7 +23,7 @@ final class PokeListViewModel {
 
     struct Output {
         // "Usecase에게 받고, View에게 줄 수 있어야함" & "View의 TableView UI 요소임" -> Relay를 써야함이 마땅하다.
-        var items: BehaviorRelay<[PokeListItem]> = BehaviorRelay<[PokeListItem]>(value: [])
+        var items: BehaviorRelay<[PKListItem]> = BehaviorRelay<[PKListItem]>(value: [])
         let screenTitle: Observable<String> = .just("Pokedex")
         let searchBarPlaceholder: Observable<String> = .just("Search results")
     }

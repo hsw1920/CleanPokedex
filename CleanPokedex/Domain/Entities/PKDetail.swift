@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PokeDetail {
+struct PKDetail {
     let name: String
     let id: String
     let hp: String

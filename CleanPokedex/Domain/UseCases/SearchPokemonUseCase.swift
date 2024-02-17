@@ -11,7 +11,7 @@ import RxCocoa
 
 protocol SearchPokemonUseCase {
     func fetchPokemonList()
-    func filterPokemonList(with searchText: String) -> Observable<[PokeListItem]>
+    func filterPokemonList(with searchText: String) -> Observable<[PKListItem]>
 }
 
 final class SearchPokemonUseCaseImp: SearchPokemonUseCase {
@@ -21,7 +21,7 @@ final class SearchPokemonUseCaseImp: SearchPokemonUseCase {
     
     private let pokeList: BehaviorRelay<[PKContentResponseDTO]> = BehaviorRelay<[PKContentResponseDTO]>(value: [])
     private let pokeImgList: BehaviorRelay<[PKSpriteItemResponseDTO]> = BehaviorRelay<[PKSpriteItemResponseDTO]>(value: [])
-    private let pokeItems: BehaviorRelay<[PokeListItem]> = BehaviorRelay<[PokeListItem]>(value: [])
+    private let pokeItems: BehaviorRelay<[PKListItem]> = BehaviorRelay<[PKListItem]>(value: [])
     private let disposeBag = DisposeBag()
     
     init(pokemonRepository: PokemonRepository) {
@@ -44,7 +44,7 @@ final class SearchPokemonUseCaseImp: SearchPokemonUseCase {
             .disposed(by: disposeBag)
     }
     
-    func filterPokemonList(with searchText: String) -> Observable<[PokeListItem]> {
+    func filterPokemonList(with searchText: String) -> Observable<[PKListItem]> {
         if searchText.isEmpty {
             return pokeItems.asObservable()
         }
@@ -64,12 +64,12 @@ extension SearchPokemonUseCase {
         return components.last!
     }
     
-    func mapToPokeListItems(pokemons: [PKContentResponseDTO], images: [PKSpriteItemResponseDTO]) -> [PokeListItem] {
+    func mapToPokeListItems(pokemons: [PKContentResponseDTO], images: [PKSpriteItemResponseDTO]) -> [PKListItem] {
         guard pokemons.count == images.count else { return [] }
         
         return pokemons.enumerated()
             .map { idx, item in
-                PokeListItem(
+                PKListItem(
                     number: extractPokemonNumber(from: item.url),
                     title: item.name,
                     imageUrl: images[idx]
