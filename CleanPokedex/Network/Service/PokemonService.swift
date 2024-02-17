@@ -9,33 +9,6 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-struct PokemonResponse: Decodable {
-    let count: Int
-    let next: String?
-    let previous: String?
-    let results: [Pokemon]
-}
-
-struct Pokemon: Decodable {
-    let name: String
-    let url: String
-}
-
-struct PokemonSpritesResponse: Decodable {
-    let sprites: PokemonSprite
-    
-    enum CodingKeys: String, CodingKey {
-        case sprites
-    }
-}
-
-struct PokemonSprite: Decodable {
-    let `default`: String
-    enum CodingKeys: String, CodingKey {
-        case `default` = "front_default"
-    }
-}
-
 protocol PokemonServiceProtocol {
     func fetchPokemons() -> Observable<[Pokemon]>
     func loadPokeImage(_ urlString: String) -> Observable<PokemonSprite>
