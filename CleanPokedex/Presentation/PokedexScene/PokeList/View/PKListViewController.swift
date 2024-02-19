@@ -12,7 +12,7 @@ import RxCocoa
 final class PKListViewController: UIViewController {
     private var searchController = UISearchController(searchResultsController: nil)
     private let tableView: UITableView = UITableView(frame: .zero)
-
+    
     private var viewModel: PKListViewModel!
     
     var disposeBag = DisposeBag()
@@ -29,36 +29,19 @@ final class PKListViewController: UIViewController {
         setupViews()
         bind(to: self.viewModel)
     }
-
+    
     private func setupViews(){
         view.backgroundColor = .systemBackground
         setupSearchController()
         setupTableView()
     }
-    
-    private func setupTableView() {
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.estimatedRowHeight = 300
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.register(PokeListItemCell.self,
-                           forCellReuseIdentifier: PokeListItemCell.reuseIdentifier)
-        
-        view.addSubview(tableView)
-        
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-    }
-    
+
     private func bind(to viewModel: PKListViewModel){
-        let input = PKListViewModel.Input( 
+        let input = PKListViewModel.Input(
             viewWillAppear: self.rx.methodInvoked(#selector(UIViewController.viewWillAppear)).map { _ in },
-            searchBarTextEvent: self.searchController.searchBar.rx.text.orEmpty.asObservable(), 
-            didTapDetailCell: self.tableView.rx.itemSelected.asObservable(), 
-            loadMorePokeList: self.searchController.searchBar.rx.textDidBeginEditing.map{ _ in }
+            searchBarTextEvent: self.searchController.searchBar.rx.text.orEmpty.asObservable(),
+            didTapDetailCell: self.tableView.rx.itemSelected.asObservable(),
+            updateNextPokeList: self.tableView.rx.reachedBottom().map { _ in }
         )
         let output = viewModel.transform(input: input)
         
@@ -78,15 +61,33 @@ final class PKListViewController: UIViewController {
             .bind(to: searchController.searchBar.rx.placeholder)
             .disposed(by: disposeBag)
     }
-
+    
 }
 
 extension PKListViewController {
-    func setupSearchController() {
+    private func setupSearchController() {
         self.navigationItem.searchController = self.searchController
         self.navigationItem.hidesSearchBarWhenScrolling = false
         self.navigationController?.navigationBar.prefersLargeTitles = true
         searchController.hidesNavigationBarDuringPresentation = false
     }
+    
+    private func setupTableView() {
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.estimatedRowHeight = 300
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.register(PokeListItemCell.self,
+                           forCellReuseIdentifier: PokeListItemCell.reuseIdentifier)
+        
+        view.addSubview(tableView)
+        
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+    
 }
 

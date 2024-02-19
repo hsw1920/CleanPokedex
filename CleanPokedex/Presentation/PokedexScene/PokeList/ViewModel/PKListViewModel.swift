@@ -19,7 +19,7 @@ final class PKListViewModel {
         let viewWillAppear: Observable<Void>
         let searchBarTextEvent: Observable<String>
         let didTapDetailCell: Observable<IndexPath>
-        let loadMorePokeList: Observable<Void>
+        let updateNextPokeList: Observable<Void>
     }
 
     struct Output {
@@ -74,7 +74,7 @@ final class PKListViewModel {
             })
             .disposed(by: disposeBag)
 
-        input.loadMorePokeList
+        input.updateNextPokeList
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
                 owner.pokeListUseCase.fetchNextPokeList()
