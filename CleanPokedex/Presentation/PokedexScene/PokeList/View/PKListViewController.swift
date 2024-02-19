@@ -38,6 +38,7 @@ final class PKListViewController: UIViewController {
 
     private func bind(to viewModel: PKListViewModel){
         let input = PKListViewModel.Input(
+            viewDidLoad: .just(()), 
             viewWillAppear: self.rx.methodInvoked(#selector(UIViewController.viewWillAppear)).map { _ in },
             searchBarTextEvent: self.searchController.searchBar.rx.text.orEmpty.asObservable(),
             didTapDetailCell: self.tableView.rx.itemSelected.asObservable(),

@@ -16,6 +16,7 @@ protocol PokeListViewDelegate {
 final class PKListViewModel {
     
     struct Input {
+        let viewDidLoad: Observable<Void>
         let viewWillAppear: Observable<Void>
         let searchBarTextEvent: Observable<String>
         let didTapDetailCell: Observable<IndexPath>
@@ -52,10 +53,17 @@ final class PKListViewModel {
     func transform(input: Input) -> Output {
         let output = Output()
         
-        input.viewWillAppear
+        input.viewDidLoad
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
                 owner.pokeListUseCase.fetchPokeList()
+            })
+            .disposed(by: disposeBag)
+        
+        input.viewWillAppear
+            .withUnretained(self)
+            .subscribe(onNext: { owner, _ in
+                print(">>> PKListVC : viewWillAppear")
             })
             .disposed(by: disposeBag)
         
