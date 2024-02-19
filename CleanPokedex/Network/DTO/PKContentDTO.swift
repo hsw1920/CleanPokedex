@@ -17,4 +17,18 @@ struct PKListResponseDTO: Decodable {
 struct PKContentResponseDTO: Decodable {
     let name: String
     let url: String
+    
+    func toDomain(with sprite: PKSprite) -> PKContent {
+        return PKContent(
+            name: self.name,
+            id: extractPokeId(from: self.url),
+            sprite: sprite.default
+        )
+    }
+    
+    private func extractPokeId(from urlString: String) -> String {
+        var components = urlString.components(separatedBy: "/")
+        components.removeLast()
+        return components.last!
+    }
 }

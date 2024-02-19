@@ -9,5 +9,5 @@ import Foundation
 import RxSwift
 
 protocol PKListRepository {
-    func fetchPokeList() -> Observable<([PKContentResponseDTO], [PKSpriteItemResponseDTO])>
+    func fetchPokeList() -> Observable<[PKContent]>
 }

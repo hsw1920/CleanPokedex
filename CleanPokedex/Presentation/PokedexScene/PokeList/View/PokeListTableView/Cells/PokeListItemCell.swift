@@ -65,7 +65,7 @@ final class PokeListItemCell: UITableViewCell {
         idLabel.text = item.id
         titleLabel.text = item.title
     
-        pokeImageView.kf.setImage(with: URL(string: item.imageUrl.default))
+        pokeImageView.kf.setImage(with: URL(string: item.imageUrl))
 //        pokeImageView.kf.setImage(with: URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/35.png"))
     }
 }

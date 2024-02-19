@@ -47,22 +47,13 @@ final class PKListUseCaseImp: PKListUseCase {
 }
 
 extension PKListUseCase {
-    func extractPokeId(from urlString: String) -> String {
-        var components = urlString.components(separatedBy: "/")
-        components.removeLast()
-        return components.last!
-    }
-    
-    func mapToPokeListItem(pokemons: [PKContentResponseDTO], images: [PKSpriteItemResponseDTO]) -> [PKListItem] {
-        guard pokemons.count == images.count else { return [] }
-        
-        return pokemons.enumerated()
-            .map { idx, item in
-                PKListItem(
-                    id: extractPokeId(from: item.url),
-                    title: item.name,
-                    imageUrl: images[idx]
-                )
-            }
+    func mapToPokeListItem(pokemons: [PKContent]) -> [PKListItem] {
+        return pokemons.map { item in
+            PKListItem(
+                id: item.id,
+                title: item.name,
+                imageUrl: item.sprite
+            )
+        }
     }
 }

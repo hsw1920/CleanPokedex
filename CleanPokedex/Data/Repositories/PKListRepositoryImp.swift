@@ -18,7 +18,7 @@ final class PKListRepositoryImp {
 }
 
 extension PKListRepositoryImp: PKListRepository {
-    func fetchPokeList() -> Observable<([PKContentResponseDTO], [PKSpriteItemResponseDTO])> {
+    func fetchPokeList() -> Observable<[PKContent]> {
         let endPoint = "https://pokeapi.co/api/v2/pokemon/"
         return pokeListService.fetchPokemons(endPoint: endPoint)
     }

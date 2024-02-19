@@ -30,6 +30,8 @@
 		6051959E2B7E2E8800470889 /* PKDetailService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6051959D2B7E2E8800470889 /* PKDetailService.swift */; };
 		60A0E1A52B808D60000A70E1 /* URLSessionNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60A0E1A42B808D60000A70E1 /* URLSessionNetworkService.swift */; };
 		60A0E1A72B8319A1000A70E1 /* PKListService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60A0E1A62B8319A1000A70E1 /* PKListService.swift */; };
+		60A0E1AA2B832A96000A70E1 /* PKContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60A0E1A92B832A96000A70E1 /* PKContent.swift */; };
+		60A0E1AC2B832C77000A70E1 /* PKSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60A0E1AB2B832C77000A70E1 /* PKSprite.swift */; };
 		60C94FFE2B7F2AC600DCC19D /* PKDetailUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C94FFD2B7F2AC600DCC19D /* PKDetailUseCase.swift */; };
 		60C950002B7F2B5600DCC19D /* PKDetailRepositoryImp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C94FFF2B7F2B5600DCC19D /* PKDetailRepositoryImp.swift */; };
 		60C950022B7F2DEB00DCC19D /* PKDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C950012B7F2DEB00DCC19D /* PKDetail.swift */; };
@@ -64,6 +66,8 @@
 		6051959D2B7E2E8800470889 /* PKDetailService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKDetailService.swift; sourceTree = "<group>"; };
 		60A0E1A42B808D60000A70E1 /* URLSessionNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionNetworkService.swift; sourceTree = "<group>"; };
 		60A0E1A62B8319A1000A70E1 /* PKListService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKListService.swift; sourceTree = "<group>"; };
+		60A0E1A92B832A96000A70E1 /* PKContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKContent.swift; sourceTree = "<group>"; };
+		60A0E1AB2B832C77000A70E1 /* PKSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKSprite.swift; sourceTree = "<group>"; };
 		60C94FFD2B7F2AC600DCC19D /* PKDetailUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKDetailUseCase.swift; sourceTree = "<group>"; };
 		60C94FFF2B7F2B5600DCC19D /* PKDetailRepositoryImp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKDetailRepositoryImp.swift; sourceTree = "<group>"; };
 		60C950012B7F2DEB00DCC19D /* PKDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKDetail.swift; sourceTree = "<group>"; };
@@ -140,6 +144,7 @@
 		6015A1DD2B78FC4D00E9D879 /* PokedexScene */ = {
 			isa = PBXGroup;
 			children = (
+				60A0E1AD2B83315C000A70E1 /* Model */,
 				6015A1EE2B79C6B600E9D879 /* Utils */,
 				6015A1DE2B78FC6200E9D879 /* Flows */,
 				6015A1E02B78FC8400E9D879 /* PokeDetails */,
@@ -326,6 +331,15 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
+		60A0E1AD2B83315C000A70E1 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				60C950012B7F2DEB00DCC19D /* PKDetail.swift */,
+				6015A1F52B79D17300E9D879 /* PKListItem.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		60C950042B7F886300DCC19D /* Resource */ = {
 			isa = PBXGroup;
 			children = (
@@ -339,8 +353,8 @@
 		60C950062B8079EB00DCC19D /* Entities */ = {
 			isa = PBXGroup;
 			children = (
-				60C950012B7F2DEB00DCC19D /* PKDetail.swift */,
-				6015A1F52B79D17300E9D879 /* PKListItem.swift */,
+				60A0E1A92B832A96000A70E1 /* PKContent.swift */,
+				60A0E1AB2B832C77000A70E1 /* PKSprite.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -456,7 +470,9 @@
 				60C950112B807C3C00DCC19D /* PKSpritesDTO.swift in Sources */,
 				60C9500D2B807B5000DCC19D /* PKStatDTO.swift in Sources */,
 				6051959C2B7E231D00470889 /* PKListDetailViewModel.swift in Sources */,
+				60A0E1AC2B832C77000A70E1 /* PKSprite.swift in Sources */,
 				60C950082B807A6D00DCC19D /* PKContentDTO.swift in Sources */,
+				60A0E1AA2B832A96000A70E1 /* PKContent.swift in Sources */,
 				60A0E1A72B8319A1000A70E1 /* PKListService.swift in Sources */,
 				6015A1F42B79C8B700E9D879 /* PokeListItemCell.swift in Sources */,
 				6015A1CA2B78FB9B00E9D879 /* SceneDelegate.swift in Sources */,

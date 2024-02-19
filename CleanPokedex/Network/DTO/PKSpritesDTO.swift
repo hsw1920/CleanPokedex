@@ -20,4 +20,8 @@ struct PKSpriteItemResponseDTO: Decodable {
     enum CodingKeys: String, CodingKey {
         case `default` = "front_default"
     }
+    
+    func toDomain() -> PKSprite {
+        return PKSprite(default: self.default)
+    }
 }
