@@ -6,3 +6,8 @@
 //
 
 import Foundation
+
+struct PKListPage {
+    let next: String?
+    let contents: [PKContent]
+}

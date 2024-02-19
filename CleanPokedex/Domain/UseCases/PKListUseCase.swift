@@ -12,14 +12,16 @@ import RxCocoa
 protocol PKListUseCase {
     func fetchPokeList()
     func filterPokeList(with searchText: String) -> Observable<[PKListItem]>
+    func fetchNextPokeList()
 }
 
 final class PKListUseCaseImp: PKListUseCase {
-    
     // MARK: - Properties
     private let pokeListRepository: PKListRepository
     
     private let pokeListItem: BehaviorRelay<[PKListItem]> = BehaviorRelay<[PKListItem]>(value: [])
+    private var nextPage: BehaviorRelay<String?> = BehaviorRelay<String?>(value: nil)
+    
     private let disposeBag = DisposeBag()
     
     init(pokeListRepository: PKListRepository) {
@@ -28,9 +30,15 @@ final class PKListUseCaseImp: PKListUseCase {
     
     func fetchPokeList() {
         pokeListRepository.fetchPokeList()
+            .map(updateNextPokeList)
             .map(mapToPokeListItem)
             .bind(to: pokeListItem)
             .disposed(by: disposeBag)
+    }
+    
+    func fetchNextPokeList() {
+        //pokeListRepository.fetchNextPokeList()
+            
     }
     
     func filterPokeList(with searchText: String) -> Observable<[PKListItem]> {
@@ -43,6 +51,11 @@ final class PKListUseCaseImp: PKListUseCase {
                 return item.title.contains(searchText)
             }
         }
+    }
+    
+    private func updateNextPokeList(list: PKListPage) -> [PKContent] {
+        nextPage.accept(list.next)
+        return list.contents
     }
 }
 

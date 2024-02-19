@@ -9,11 +9,11 @@ import RxSwift
 import RxCocoa
 
 protocol PKListService: URLSessionNetworkService {
-    func fetchPokemons(endPoint: String) -> Observable<[PKContent]>
+    func fetchPokemons(endPoint: String) -> Observable<PKListPage>
 }
 
 final class PKListServiceImp: PKListService {
-    func fetchPokemons(endPoint: String) -> Observable<[PKContent]> {
+    func fetchPokemons(endPoint: String) -> Observable<PKListPage> {
         let decodeTarget = PKListResponseDTO.self
         return get(url: endPoint)
             .flatMap { result in
@@ -29,7 +29,7 @@ final class PKListServiceImp: PKListService {
 }
 
 extension PKListServiceImp {
-    private func fetchWithSprites(for list: PKListResponseDTO) -> Observable<[PKContent]> {
+    private func fetchWithSprites(for list: PKListResponseDTO) -> Observable<PKListPage> {
         let decodeTarget = PKSpritesResponseDTO.self
         
         let tasks = list.results.map{ $0.url }
@@ -52,15 +52,17 @@ extension PKListServiceImp {
             }
     }
     
-    private func parseToDomain(list: PKListResponseDTO, sprites: [PKSpritesResponseDTO]) -> [PKContent] {
+    private func parseToDomain(list: PKListResponseDTO, sprites: [PKSpritesResponseDTO]) -> PKListPage {
         guard list.results.count == sprites.count else {
-            return []
+            return .init(next: nil, contents: [])
         }
-        
-        return list.results.enumerated()
+
+        let contents =  list.results.enumerated()
             .map { idx, item in
                 item.toDomain(with: sprites[idx].sprites.toDomain())
             }
+        
+        return PKListPage(next: list.next, contents: contents)
     }
 
 }

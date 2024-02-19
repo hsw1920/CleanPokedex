@@ -19,6 +19,7 @@ final class PKListViewModel {
         let viewWillAppear: Observable<Void>
         let searchBarTextEvent: Observable<String>
         let didTapDetailCell: Observable<IndexPath>
+        let loadMorePokeList: Observable<Void>
     }
 
     struct Output {
