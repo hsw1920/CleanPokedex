@@ -16,7 +16,7 @@ final class AppCoordinator: Coordinator {
     }
     
     func start() {
-        let coordinator = PokeSearchFlowCoordinator(navigationController)
+        let coordinator = PKListFlowCoordinator(navigationController)
         coordinator.delegate = self
         childCoordinator.append(coordinator)
         coordinator.start()

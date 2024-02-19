@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 import Kingfisher
 
-final class PokeListDetailViewController: UIViewController {
+final class PKListDetailViewController: UIViewController {
     
     private lazy var pokemonImageView: UIImageView = {
         let imgView = UIImageView(image: .none)
@@ -128,13 +128,13 @@ final class PokeListDetailViewController: UIViewController {
         return stackView
     }()
     
-    private var viewModel: PokeListDetailViewModel!
+    private var viewModel: PKListDetailViewModel!
     
     var disposeBag = DisposeBag()
     
     // MARK: Lifecycle
-    static func create(with viewModel: PokeListDetailViewModel) -> PokeListDetailViewController {
-        let view = PokeListDetailViewController()
+    static func create(with viewModel: PKListDetailViewModel) -> PKListDetailViewController {
+        let view = PKListDetailViewController()
         view.viewModel = viewModel
         return view
     }
@@ -215,8 +215,8 @@ final class PokeListDetailViewController: UIViewController {
         typeLabel.text = "타입"
     }
     
-    private func bind(to viewModel: PokeListDetailViewModel) {
-        let input = PokeListDetailViewModel.Input(
+    private func bind(to viewModel: PKListDetailViewModel) {
+        let input = PKListDetailViewModel.Input(
             viewWillAppear: self.rx.methodInvoked(#selector(UIViewController.viewWillAppear)).map { _ in }
         )
         let output = viewModel.transform(input: input)

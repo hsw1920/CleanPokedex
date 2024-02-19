@@ -9,27 +9,27 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-protocol PokemonDetailUseCase {
+protocol PKDetailUseCase {
     func fetchPokeDetail() -> Observable<PKDetailResponseDTO>
 }
 
-final class PokemonDetailUseCaseImp {
+final class PKDetailUseCaseImp {
 
     // MARK: - Properties
-    private let pokemonDetailRepository: PokemonDetailRepository
+    private let pokeDetailRepository: PKDetailRepository
     
     deinit {
         print("deinit - \(self)")
     }
     
-    init(pokemonDetailRepository: PokemonDetailRepository) {
-        self.pokemonDetailRepository = pokemonDetailRepository
+    init(pokeDetailRepository: PKDetailRepository) {
+        self.pokeDetailRepository = pokeDetailRepository
     }
 }
 
-extension PokemonDetailUseCaseImp: PokemonDetailUseCase {
+extension PKDetailUseCaseImp: PKDetailUseCase {
     func fetchPokeDetail() -> Observable<PKDetailResponseDTO> {
-        return pokemonDetailRepository.fetchPokemonDetail()
+        return pokeDetailRepository.fetchPokemonDetail()
     }
 }
 

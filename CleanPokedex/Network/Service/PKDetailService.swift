@@ -13,7 +13,7 @@ protocol PokemonDetailServiceProtocol {
     func fetchPokemonDetail() -> Observable<PKDetailResponseDTO>
 }
 
-final class PokemonDetailService: PokemonDetailServiceProtocol {
+final class PKDetailService: PokemonDetailServiceProtocol {
 
     deinit {
         print("deinit - \(self)")

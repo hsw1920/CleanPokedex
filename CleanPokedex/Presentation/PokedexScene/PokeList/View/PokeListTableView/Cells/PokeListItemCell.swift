@@ -11,7 +11,7 @@ import Kingfisher
 final class PokeListItemCell: UITableViewCell {
     static let reuseIdentifier = String(describing: PokeListItemCell.self)
     
-    private let numberLabel: UILabel = {
+    private let idLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -41,7 +41,7 @@ final class PokeListItemCell: UITableViewCell {
     }
     
     private func setupViews() {
-        contentView.addSubview(numberLabel)
+        contentView.addSubview(idLabel)
         contentView.addSubview(titleLabel)
         contentView.addSubview(pokeImageView)
         
@@ -51,9 +51,9 @@ final class PokeListItemCell: UITableViewCell {
             pokeImageView.heightAnchor.constraint(equalToConstant: 100),
             pokeImageView.widthAnchor.constraint(equalToConstant: 100),
 
-            numberLabel.topAnchor.constraint(greaterThanOrEqualTo: pokeImageView.bottomAnchor, constant: 10),
-            numberLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            numberLabel.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: -10),
+            idLabel.topAnchor.constraint(greaterThanOrEqualTo: pokeImageView.bottomAnchor, constant: 10),
+            idLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            idLabel.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: -10),
             
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
@@ -62,7 +62,7 @@ final class PokeListItemCell: UITableViewCell {
     }
 
     func configure(item: PKListItem){
-        numberLabel.text = item.number
+        idLabel.text = item.id
         titleLabel.text = item.title
     
         pokeImageView.kf.setImage(with: URL(string: item.imageUrl.default))

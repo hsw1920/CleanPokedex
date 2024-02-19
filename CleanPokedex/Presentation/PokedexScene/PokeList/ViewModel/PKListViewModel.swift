@@ -13,7 +13,7 @@ protocol PokeListViewDelegate {
     func didTapDetailCell(with id: String)
 }
 
-final class PokeListViewModel {
+final class PKListViewModel {
     
     struct Input {
         let viewWillAppear: Observable<Void>
@@ -28,17 +28,19 @@ final class PokeListViewModel {
         let searchBarPlaceholder: Observable<String> = .just("Search results")
     }
 
-    private let searchPokemonUseCase: SearchPokemonUseCase
+    private let pokeListUseCase: PKListUseCase
+    
+    private weak var coordinator: PKListFlowCoordinator?
+    
     private var disposeBag = DisposeBag()
-    private weak var coordinator: PokeSearchFlowCoordinator?
     
     // MARK: Init
     init(
-        coordinator: PokeSearchFlowCoordinator?,
-        searchPokemonUseCase: SearchPokemonUseCase
+        coordinator: PKListFlowCoordinator?,
+        pokeListUseCase: PKListUseCase
     ) {
         self.coordinator = coordinator
-        self.searchPokemonUseCase = searchPokemonUseCase
+        self.pokeListUseCase = pokeListUseCase
     }
     
     deinit {
@@ -52,14 +54,14 @@ final class PokeListViewModel {
         input.viewWillAppear
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
-                owner.searchPokemonUseCase.fetchPokemonList()
+                owner.pokeListUseCase.fetchPokeList()
             })
             .disposed(by: disposeBag)
         
         input.searchBarTextEvent
             .withUnretained(self)
             .flatMapLatest { owner, text in
-                return owner.searchPokemonUseCase.filterPokemonList(with: text)
+                return owner.pokeListUseCase.filterPokeList(with: text)
             }
             .bind(to: output.items)
             .disposed(by: disposeBag)
@@ -67,7 +69,7 @@ final class PokeListViewModel {
         input.didTapDetailCell
             .withUnretained(self)
             .subscribe(onNext: { owner, indexPath in
-                owner.coordinator?.didTapDetailCell(with: output.items.value[indexPath.row].number)
+                owner.coordinator?.didTapDetailCell(with: output.items.value[indexPath.row].id)
             })
             .disposed(by: disposeBag)
 

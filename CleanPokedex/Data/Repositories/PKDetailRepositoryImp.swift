@@ -8,21 +8,21 @@
 import Foundation
 import RxSwift
 
-final class PokemonDetailRepositoryImp {
-    private let pokemonDetailService: PokemonDetailService
+final class PKDetailRepositoryImp {
+    private let pokemonDetailService: PKDetailService
     
     deinit {
         print("deinit - \(self)")
     }
     
     init(
-        pokemonDetailService: PokemonDetailService
+        pokeDetailService: PKDetailService
     ) {
-        self.pokemonDetailService = pokemonDetailService
+        self.pokemonDetailService = pokeDetailService
     }
 }
 
-extension PokemonDetailRepositoryImp: PokemonDetailRepository {
+extension PKDetailRepositoryImp: PKDetailRepository {
     func fetchPokemonDetail() -> Observable<PKDetailResponseDTO> {
         return pokemonDetailService.fetchPokemonDetail()
     }

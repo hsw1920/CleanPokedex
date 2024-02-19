@@ -8,13 +8,13 @@
 import Foundation
 
 struct PKListItem {
-    let number: String
+    let id: String
     let title: String
     let imageUrl: PKSpriteItemResponseDTO
     
     static let mock: [PKListItem] = [
-        PKListItem(number: "1", title: "이상해씨", imageUrl: .init(default: "")),
-        PKListItem(number: "2", title: "파이리", imageUrl: .init(default: "")),
-        PKListItem(number: "3", title: "꼬부기", imageUrl: .init(default: "")),
+        PKListItem(id: "1", title: "이상해씨", imageUrl: .init(default: "")),
+        PKListItem(id: "2", title: "파이리", imageUrl: .init(default: "")),
+        PKListItem(id: "3", title: "꼬부기", imageUrl: .init(default: "")),
     ]
 }

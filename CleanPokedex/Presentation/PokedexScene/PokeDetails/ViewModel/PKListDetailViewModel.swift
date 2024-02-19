@@ -9,7 +9,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-final class PokeListDetailViewModel {
+final class PKListDetailViewModel {
     struct Input {
         let viewWillAppear: Observable<Void>
     }
@@ -32,11 +32,11 @@ final class PokeListDetailViewModel {
         print("deinit - \(self)")
     }
     
-    let pokeDetailUseCase: PokemonDetailUseCase
+    let pokeDetailUseCase: PKDetailUseCase
     
     private var disposeBag = DisposeBag()
     
-    init(pokeDetailUseCase: PokemonDetailUseCase) {
+    init(pokeDetailUseCase: PKDetailUseCase) {
         self.pokeDetailUseCase = pokeDetailUseCase
     }
     
@@ -52,8 +52,8 @@ final class PokeListDetailViewModel {
     }
 }
 
-extension PokeListDetailViewModel {
-    func fetchPokeDetail(to output: PokeListDetailViewModel.Output) {
+extension PKListDetailViewModel {
+    func fetchPokeDetail(to output: PKListDetailViewModel.Output) {
         pokeDetailUseCase.fetchPokeDetail()
             .map(mapToPokeDetail)
             .subscribe(onNext: { item in

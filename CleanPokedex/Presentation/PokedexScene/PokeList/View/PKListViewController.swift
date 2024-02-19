@@ -9,17 +9,17 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-final class PokeListViewController: UIViewController {
+final class PKListViewController: UIViewController {
     private var searchController = UISearchController(searchResultsController: nil)
     private let tableView: UITableView = UITableView(frame: .zero)
 
-    private var viewModel: PokeListViewModel!
+    private var viewModel: PKListViewModel!
     
     var disposeBag = DisposeBag()
     
     // MARK: Lifecycle
-    static func create(with viewModel: PokeListViewModel) -> PokeListViewController {
-        let view = PokeListViewController()
+    static func create(with viewModel: PKListViewModel) -> PKListViewController {
+        let view = PKListViewController()
         view.viewModel = viewModel
         return view
     }
@@ -53,8 +53,8 @@ final class PokeListViewController: UIViewController {
         ])
     }
     
-    private func bind(to viewModel: PokeListViewModel){
-        let input = PokeListViewModel.Input( 
+    private func bind(to viewModel: PKListViewModel){
+        let input = PKListViewModel.Input( 
             viewWillAppear: self.rx.methodInvoked(#selector(UIViewController.viewWillAppear)).map { _ in },
             searchBarTextEvent: self.searchController.searchBar.rx.text.orEmpty.asObservable(), 
             didTapDetailCell: self.tableView.rx.itemSelected.asObservable()
@@ -80,7 +80,7 @@ final class PokeListViewController: UIViewController {
 
 }
 
-extension PokeListViewController {
+extension PKListViewController {
     func setupSearchController() {
         self.navigationItem.searchController = self.searchController
         self.navigationItem.hidesSearchBarWhenScrolling = false

@@ -8,6 +8,6 @@
 import Foundation
 import RxSwift
 
-protocol PokemonDetailRepository {
+protocol PKDetailRepository {
     func fetchPokemonDetail() -> Observable<PKDetailResponseDTO>
 }
