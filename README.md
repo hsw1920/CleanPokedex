@@ -12,7 +12,7 @@
 - List Pagenation
 - infinity Scroll
 - Pokemon Detail 불러오기
-
+- Search Pokemon List
 
 ### **사용 기술**
 
