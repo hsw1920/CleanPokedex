@@ -10,7 +10,7 @@
 - UITableView (List & Detail)
 - Kingfisher Image 세팅
 - List Pagenation
-- infinty Scroll
+- infinity Scroll
 - Pokemon Detail 불러오기
 
 
