@@ -74,6 +74,12 @@ final class PKListViewModel {
             })
             .disposed(by: disposeBag)
 
+        input.loadMorePokeList
+            .withUnretained(self)
+            .subscribe(onNext: { owner, _ in
+                owner.pokeListUseCase.fetchNextPokeList()
+            })
+            .disposed(by: disposeBag)
         return output
     }
 }

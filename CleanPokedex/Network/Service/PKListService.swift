@@ -10,6 +10,8 @@ import RxCocoa
 
 protocol PKListService: URLSessionNetworkService {
     func fetchPokemons(endPoint: String) -> Observable<PKListPage>
+    func fetchNextPokeList(endPoint: String) -> Observable<PKListPage>
+    
 }
 
 final class PKListServiceImp: PKListService {
@@ -25,6 +27,10 @@ final class PKListServiceImp: PKListService {
                     throw error
                 }
             }
+    }
+    
+    func fetchNextPokeList(endPoint: String) -> Observable<PKListPage> {
+        return fetchPokemons(endPoint: endPoint)
     }
 }
 

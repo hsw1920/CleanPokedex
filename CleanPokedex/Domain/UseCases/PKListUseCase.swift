@@ -30,15 +30,21 @@ final class PKListUseCaseImp: PKListUseCase {
     
     func fetchPokeList() {
         pokeListRepository.fetchPokeList()
-            .map(updateNextPokeList)
+            .map(updateNextPokeListPage)
             .map(mapToPokeListItem)
             .bind(to: pokeListItem)
             .disposed(by: disposeBag)
     }
     
     func fetchNextPokeList() {
-        //pokeListRepository.fetchNextPokeList()
-            
+        guard let nextPage = nextPage.value else { return }
+        
+        pokeListRepository.fetchNextPokeList(endPoint: nextPage)
+            .map(updateNextPokeListPage)
+            .map(mapToPokeListItem)
+            .map(accumulatePokeListItem)
+            .bind(to: pokeListItem)
+            .disposed(by: disposeBag)
     }
     
     func filterPokeList(with searchText: String) -> Observable<[PKListItem]> {
@@ -53,14 +59,12 @@ final class PKListUseCaseImp: PKListUseCase {
         }
     }
     
-    private func updateNextPokeList(list: PKListPage) -> [PKContent] {
+    private func updateNextPokeListPage(list: PKListPage) -> [PKContent] {
         nextPage.accept(list.next)
         return list.contents
     }
-}
-
-extension PKListUseCase {
-    func mapToPokeListItem(pokemons: [PKContent]) -> [PKListItem] {
+    
+    private func mapToPokeListItem(pokemons: [PKContent]) -> [PKListItem] {
         return pokemons.map { item in
             PKListItem(
                 id: item.id,
@@ -68,5 +72,9 @@ extension PKListUseCase {
                 imageUrl: item.sprite
             )
         }
+    }
+    
+    private func accumulatePokeListItem(_ newList: [PKListItem]) -> [PKListItem] {
+        return pokeListItem.value + newList
     }
 }

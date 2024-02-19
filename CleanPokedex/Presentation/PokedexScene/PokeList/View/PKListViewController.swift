@@ -58,7 +58,7 @@ final class PKListViewController: UIViewController {
             viewWillAppear: self.rx.methodInvoked(#selector(UIViewController.viewWillAppear)).map { _ in },
             searchBarTextEvent: self.searchController.searchBar.rx.text.orEmpty.asObservable(), 
             didTapDetailCell: self.tableView.rx.itemSelected.asObservable(), 
-            loadMorePokeList: .just(())
+            loadMorePokeList: self.searchController.searchBar.rx.textDidBeginEditing.map{ _ in }
         )
         let output = viewModel.transform(input: input)
         

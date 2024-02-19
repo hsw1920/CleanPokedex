@@ -10,4 +10,5 @@ import RxSwift
 
 protocol PKListRepository {
     func fetchPokeList() -> Observable<PKListPage>
+    func fetchNextPokeList(endPoint: String) -> Observable<PKListPage>
 }
