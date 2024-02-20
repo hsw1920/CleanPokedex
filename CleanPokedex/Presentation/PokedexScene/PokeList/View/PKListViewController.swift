@@ -11,6 +11,7 @@ import RxCocoa
 
 final class PKListViewController: UIViewController {
     private var searchController = UISearchController(searchResultsController: nil)
+    private let activityIndicator = UIActivityIndicatorView()
     private let tableView: UITableView = UITableView(frame: .zero)
     
     private var viewModel: PKListViewModel!
@@ -34,6 +35,7 @@ final class PKListViewController: UIViewController {
         view.backgroundColor = .systemBackground
         setupSearchController()
         setupTableView()
+        setupActivityView()
     }
 
     private func bind(to viewModel: PKListViewModel){
@@ -61,6 +63,10 @@ final class PKListViewController: UIViewController {
         output.searchBarPlaceholder
             .bind(to: searchController.searchBar.rx.placeholder)
             .disposed(by: disposeBag)
+
+        output.isLoading
+            .bind(to: activityIndicator.rx.isAnimating)
+            .disposed(by: disposeBag)
     }
     
 }
@@ -72,7 +78,7 @@ extension PKListViewController {
         self.navigationController?.navigationBar.prefersLargeTitles = true
         searchController.hidesNavigationBarDuringPresentation = false
     }
-    
+
     private func setupTableView() {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.estimatedRowHeight = 300
@@ -90,5 +96,17 @@ extension PKListViewController {
         ])
     }
     
+    private func setupActivityView() {
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.stopAnimating()
+        
+        view.addSubview(activityIndicator)
+        
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+    }
 }
 

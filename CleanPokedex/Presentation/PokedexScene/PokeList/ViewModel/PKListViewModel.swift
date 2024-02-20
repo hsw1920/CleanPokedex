@@ -28,6 +28,7 @@ final class PKListViewModel {
         var items: BehaviorRelay<[PKListItem]> = BehaviorRelay<[PKListItem]>(value: [])
         let screenTitle: Observable<String> = .just("Pokedex")
         let searchBarPlaceholder: Observable<String> = .just("Search results")
+        let isLoading: BehaviorRelay<Bool> = BehaviorRelay<Bool>(value: false)
     }
 
     private let pokeListUseCase: PKListUseCase
@@ -52,6 +53,10 @@ final class PKListViewModel {
     // MARK: Transform
     func transform(input: Input) -> Output {
         let output = Output()
+        
+        pokeListUseCase.isLoading
+            .bind(to: output.isLoading)
+            .disposed(by: disposeBag)
         
         input.viewDidLoad
             .withUnretained(self)
@@ -88,6 +93,7 @@ final class PKListViewModel {
                 owner.pokeListUseCase.fetchNextPokeList()
             })
             .disposed(by: disposeBag)
+        
         return output
     }
 }

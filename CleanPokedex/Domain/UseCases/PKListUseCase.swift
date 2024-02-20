@@ -13,6 +13,7 @@ protocol PKListUseCase {
     func fetchPokeList()
     func filterPokeList(with searchText: String) -> Observable<[PKListItem]>
     func fetchNextPokeList()
+    var isLoading: PublishSubject<Bool> { get }
 }
 
 final class PKListUseCaseImp: PKListUseCase {
@@ -21,6 +22,7 @@ final class PKListUseCaseImp: PKListUseCase {
     
     private let pokeListItem: BehaviorRelay<[PKListItem]> = BehaviorRelay<[PKListItem]>(value: [])
     private var nextPage: BehaviorRelay<String?> = BehaviorRelay<String?>(value: nil)
+    var isLoading: PublishSubject<Bool> = PublishSubject<Bool>()
     
     private let disposeBag = DisposeBag()
     
@@ -29,9 +31,14 @@ final class PKListUseCaseImp: PKListUseCase {
     }
     
     func fetchPokeList() {
+        isLoading.onNext(true)
+        
         pokeListRepository.fetchPokeList()
             .map(updateNextPokeListPage)
             .map(mapToPokeListItem)
+            .do(onDispose: { [weak self] in
+                self?.isLoading.onNext(false)
+            })
             .bind(to: pokeListItem)
             .disposed(by: disposeBag)
     }
@@ -39,10 +46,15 @@ final class PKListUseCaseImp: PKListUseCase {
     func fetchNextPokeList() {
         guard let nextPage = nextPage.value else { return }
         
+        isLoading.onNext(true)
+        
         pokeListRepository.fetchNextPokeList(endPoint: nextPage)
             .map(updateNextPokeListPage)
             .map(mapToPokeListItem)
             .map(accumulatePokeListItem)
+            .do(onDispose: { [weak self] in
+                self?.isLoading.onNext(false)
+            })
             .bind(to: pokeListItem)
             .disposed(by: disposeBag)
     }
