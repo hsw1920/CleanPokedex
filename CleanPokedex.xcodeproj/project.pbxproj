@@ -34,6 +34,10 @@
 		60A0E1AC2B832C77000A70E1 /* PKSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60A0E1AB2B832C77000A70E1 /* PKSprite.swift */; };
 		60A61E392B833D4200F18FDB /* PKListPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60A61E382B833D4200F18FDB /* PKListPage.swift */; };
 		60A61E3B2B836BBC00F18FDB /* UIScrollView+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60A61E3A2B836BBC00F18FDB /* UIScrollView+Rx.swift */; };
+		60A61E3F2B8486BD00F18FDB /* PokeListCollectionViewItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60A61E3E2B8486BD00F18FDB /* PokeListCollectionViewItemCell.swift */; };
+		60A61E432B8487C300F18FDB /* PKListCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60A61E422B8487C300F18FDB /* PKListCollectionViewLayout.swift */; };
+		60A61E482B8598CE00F18FDB /* PKListBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60A61E472B8598CE00F18FDB /* PKListBanner.swift */; };
+		60A61E4A2B859E0200F18FDB /* PokeListCollectionViewBannerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60A61E492B859E0200F18FDB /* PokeListCollectionViewBannerCell.swift */; };
 		60C94FFE2B7F2AC600DCC19D /* PKDetailUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C94FFD2B7F2AC600DCC19D /* PKDetailUseCase.swift */; };
 		60C950002B7F2B5600DCC19D /* PKDetailRepositoryImp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C94FFF2B7F2B5600DCC19D /* PKDetailRepositoryImp.swift */; };
 		60C950022B7F2DEB00DCC19D /* PKDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C950012B7F2DEB00DCC19D /* PKDetail.swift */; };
@@ -72,6 +76,10 @@
 		60A0E1AB2B832C77000A70E1 /* PKSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKSprite.swift; sourceTree = "<group>"; };
 		60A61E382B833D4200F18FDB /* PKListPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKListPage.swift; sourceTree = "<group>"; };
 		60A61E3A2B836BBC00F18FDB /* UIScrollView+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Rx.swift"; sourceTree = "<group>"; };
+		60A61E3E2B8486BD00F18FDB /* PokeListCollectionViewItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeListCollectionViewItemCell.swift; sourceTree = "<group>"; };
+		60A61E422B8487C300F18FDB /* PKListCollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKListCollectionViewLayout.swift; sourceTree = "<group>"; };
+		60A61E472B8598CE00F18FDB /* PKListBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKListBanner.swift; sourceTree = "<group>"; };
+		60A61E492B859E0200F18FDB /* PokeListCollectionViewBannerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeListCollectionViewBannerCell.swift; sourceTree = "<group>"; };
 		60C94FFD2B7F2AC600DCC19D /* PKDetailUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKDetailUseCase.swift; sourceTree = "<group>"; };
 		60C94FFF2B7F2B5600DCC19D /* PKDetailRepositoryImp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKDetailRepositoryImp.swift; sourceTree = "<group>"; };
 		60C950012B7F2DEB00DCC19D /* PKDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKDetail.swift; sourceTree = "<group>"; };
@@ -187,6 +195,7 @@
 			isa = PBXGroup;
 			children = (
 				6015A1CB2B78FB9B00E9D879 /* PKListViewController.swift */,
+				60A61E3C2B84862B00F18FDB /* PokeListCollectionView */,
 				6015A1EF2B79C73100E9D879 /* PokeListTableView */,
 			);
 			path = View;
@@ -341,8 +350,35 @@
 			children = (
 				60C950012B7F2DEB00DCC19D /* PKDetail.swift */,
 				6015A1F52B79D17300E9D879 /* PKListItem.swift */,
+				60A61E472B8598CE00F18FDB /* PKListBanner.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		60A61E3C2B84862B00F18FDB /* PokeListCollectionView */ = {
+			isa = PBXGroup;
+			children = (
+				60A61E412B8487B600F18FDB /* Layout */,
+				60A61E3D2B84864200F18FDB /* Cells */,
+			);
+			path = PokeListCollectionView;
+			sourceTree = "<group>";
+		};
+		60A61E3D2B84864200F18FDB /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				60A61E3E2B8486BD00F18FDB /* PokeListCollectionViewItemCell.swift */,
+				60A61E492B859E0200F18FDB /* PokeListCollectionViewBannerCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		60A61E412B8487B600F18FDB /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				60A61E422B8487C300F18FDB /* PKListCollectionViewLayout.swift */,
+			);
+			path = Layout;
 			sourceTree = "<group>";
 		};
 		60C950042B7F886300DCC19D /* Resource */ = {
@@ -471,10 +507,12 @@
 				60C94FFE2B7F2AC600DCC19D /* PKDetailUseCase.swift in Sources */,
 				6015A1F62B79D17300E9D879 /* PKListItem.swift in Sources */,
 				6015A1FA2B79E44900E9D879 /* PKListUseCase.swift in Sources */,
+				60A61E432B8487C300F18FDB /* PKListCollectionViewLayout.swift in Sources */,
 				6015A1C82B78FB9B00E9D879 /* AppDelegate.swift in Sources */,
 				60C950002B7F2B5600DCC19D /* PKDetailRepositoryImp.swift in Sources */,
 				60C950112B807C3C00DCC19D /* PKSpritesDTO.swift in Sources */,
 				60C9500D2B807B5000DCC19D /* PKStatDTO.swift in Sources */,
+				60A61E4A2B859E0200F18FDB /* PokeListCollectionViewBannerCell.swift in Sources */,
 				6051959C2B7E231D00470889 /* PKListDetailViewModel.swift in Sources */,
 				60A61E3B2B836BBC00F18FDB /* UIScrollView+Rx.swift in Sources */,
 				60A0E1AC2B832C77000A70E1 /* PKSprite.swift in Sources */,
@@ -485,7 +523,9 @@
 				6015A1CA2B78FB9B00E9D879 /* SceneDelegate.swift in Sources */,
 				60A61E392B833D4200F18FDB /* PKListPage.swift in Sources */,
 				6015A1E42B78FE7300E9D879 /* PKListFlowCoordinator.swift in Sources */,
+				60A61E3F2B8486BD00F18FDB /* PokeListCollectionViewItemCell.swift in Sources */,
 				6015A1E82B7900CF00E9D879 /* AppCoordinator.swift in Sources */,
+				60A61E482B8598CE00F18FDB /* PKListBanner.swift in Sources */,
 				60A0E1A52B808D60000A70E1 /* URLSessionNetworkService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

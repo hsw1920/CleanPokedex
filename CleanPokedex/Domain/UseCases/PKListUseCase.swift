@@ -10,10 +10,11 @@ import RxSwift
 import RxCocoa
 
 protocol PKListUseCase {
-    func fetchPokeList()
+    //func fetchPokeList()
+    func fetchPokeList() -> Observable<[PKListItem]>
     func filterPokeList(with searchText: String) -> Observable<[PKListItem]>
     func fetchNextPokeList()
-    var isLoading: PublishSubject<Bool> { get }
+    var isLoading: BehaviorRelay<Bool> { get }
 }
 
 final class PKListUseCaseImp: PKListUseCase {
@@ -22,7 +23,7 @@ final class PKListUseCaseImp: PKListUseCase {
     
     private let pokeListItem: BehaviorRelay<[PKListItem]> = BehaviorRelay<[PKListItem]>(value: [])
     private var nextPage: BehaviorRelay<String?> = BehaviorRelay<String?>(value: nil)
-    var isLoading: PublishSubject<Bool> = PublishSubject<Bool>()
+    var isLoading: BehaviorRelay<Bool> = BehaviorRelay<Bool>(value: false)
     
     private let disposeBag = DisposeBag()
     
@@ -30,30 +31,33 @@ final class PKListUseCaseImp: PKListUseCase {
         self.pokeListRepository = pokeListRepository
     }
     
-    func fetchPokeList() {
-        isLoading.onNext(true)
+    func fetchPokeList() -> Observable<[PKListItem]> {
+        if isLoading.value { return pokeListItem.asObservable() }
         
-        pokeListRepository.fetchPokeList()
+        isLoading.accept(true)
+        
+        return pokeListRepository.fetchPokeList()
             .map(updateNextPokeListPage)
             .map(mapToPokeListItem)
+            .map(accumulatePokeListItem)
             .do(onDispose: { [weak self] in
-                self?.isLoading.onNext(false)
+                self?.isLoading.accept(false)
             })
-            .bind(to: pokeListItem)
-            .disposed(by: disposeBag)
+            .asObservable()
     }
     
     func fetchNextPokeList() {
         guard let nextPage = nextPage.value else { return }
+        if isLoading.value { return }
         
-        isLoading.onNext(true)
+        isLoading.accept(true)
         
         pokeListRepository.fetchNextPokeList(endPoint: nextPage)
             .map(updateNextPokeListPage)
             .map(mapToPokeListItem)
             .map(accumulatePokeListItem)
             .do(onDispose: { [weak self] in
-                self?.isLoading.onNext(false)
+                self?.isLoading.accept(false)
             })
             .bind(to: pokeListItem)
             .disposed(by: disposeBag)
@@ -87,6 +91,8 @@ final class PKListUseCaseImp: PKListUseCase {
     }
     
     private func accumulatePokeListItem(_ newList: [PKListItem]) -> [PKListItem] {
-        return pokeListItem.value + newList
+        let prevList = pokeListItem.value
+        pokeListItem.accept(prevList + newList)
+        return pokeListItem.value
     }
 }

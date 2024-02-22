@@ -29,6 +29,7 @@ final class PKListViewModel {
         let screenTitle: Observable<String> = .just("Pokedex")
         let searchBarPlaceholder: Observable<String> = .just("Search results")
         let isLoading: BehaviorRelay<Bool> = BehaviorRelay<Bool>(value: false)
+        let viewState: BehaviorRelay<PKListState> = BehaviorRelay<PKListState>(value: .list)
     }
 
     private let pokeListUseCase: PKListUseCase
@@ -36,7 +37,7 @@ final class PKListViewModel {
     private weak var coordinator: PKListFlowCoordinator?
     
     private var disposeBag = DisposeBag()
-    
+
     // MARK: Init
     init(
         coordinator: PKListFlowCoordinator?,
@@ -60,9 +61,10 @@ final class PKListViewModel {
         
         input.viewDidLoad
             .withUnretained(self)
-            .subscribe(onNext: { owner, _ in
-                owner.pokeListUseCase.fetchPokeList()
-            })
+            .flatMapLatest { owner, _ in
+                return owner.pokeListUseCase.fetchPokeList()
+            }
+            .bind(to: output.items)
             .disposed(by: disposeBag)
         
         input.viewWillAppear
@@ -83,7 +85,13 @@ final class PKListViewModel {
         input.didTapDetailCell
             .withUnretained(self)
             .subscribe(onNext: { owner, indexPath in
-                owner.coordinator?.didTapDetailCell(with: output.items.value[indexPath.row].id)
+                switch PKListSection.allCases[indexPath.section] {
+                case .banner:
+                    if indexPath.row == 0 { output.viewState.accept(.list) }
+                    else { output.viewState.accept(.grid) }
+                case .main:
+                    owner.coordinator?.didTapDetailCell(with: output.items.value[indexPath.row].id)
+                }
             })
             .disposed(by: disposeBag)
 
@@ -93,7 +101,11 @@ final class PKListViewModel {
                 owner.pokeListUseCase.fetchNextPokeList()
             })
             .disposed(by: disposeBag)
-        
+
         return output
     }
+}
+
+enum PKListState {
+    case list, grid
 }

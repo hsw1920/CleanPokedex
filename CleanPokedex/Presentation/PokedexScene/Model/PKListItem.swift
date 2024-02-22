@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PKListItem {
+struct PKListItem: Hashable {
     let id: String
     let title: String
     let imageUrl: String

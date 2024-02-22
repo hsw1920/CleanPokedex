@@ -10,13 +10,16 @@ import RxSwift
 import RxCocoa
 
 final class PKListViewController: UIViewController {
-    private var searchController = UISearchController(searchResultsController: nil)
+    private let searchController = UISearchController(searchResultsController: nil)
     private let activityIndicator = UIActivityIndicatorView()
-    private let tableView: UITableView = UITableView(frame: .zero)
+    private let collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
+    
+    private var dataSource: UICollectionViewDiffableDataSource<PKListSection, SectionItem>!
+    private var snapshot: NSDiffableDataSourceSnapshot<PKListSection, SectionItem>!
     
     private var viewModel: PKListViewModel!
     
-    var disposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
     
     // MARK: Lifecycle
     static func create(with viewModel: PKListViewModel) -> PKListViewController {
@@ -34,41 +37,58 @@ final class PKListViewController: UIViewController {
     private func setupViews(){
         view.backgroundColor = .systemBackground
         setupSearchController()
-        setupTableView()
+        setupCollectionView()
         setupActivityView()
     }
-
+    
     private func bind(to viewModel: PKListViewModel){
         let input = PKListViewModel.Input(
-            viewDidLoad: .just(()), 
+            viewDidLoad: .just(()),
             viewWillAppear: self.rx.methodInvoked(#selector(UIViewController.viewWillAppear)).map { _ in },
             searchBarTextEvent: self.searchController.searchBar.rx.text.orEmpty.asObservable(),
-            didTapDetailCell: self.tableView.rx.itemSelected.asObservable(),
-            updateNextPokeList: self.tableView.rx.reachedBottom().map { _ in }
+            didTapDetailCell: self.collectionView.rx.itemSelected.asObservable(),
+            updateNextPokeList: self.collectionView.rx.reachedBottom().map { _ in }
         )
         let output = viewModel.transform(input: input)
-        
-        output.items
-            .bind(to: tableView.rx.items(cellIdentifier: PokeListItemCell.reuseIdentifier,
-                                         cellType: PokeListItemCell.self)
-            ){ _, item, cell in
-                cell.configure(item: item)
-            }
-            .disposed(by: disposeBag)
-        
+
         output.screenTitle
+            .observe(on: MainScheduler.asyncInstance)
             .bind(to: navigationItem.rx.title)
             .disposed(by: disposeBag)
         
         output.searchBarPlaceholder
+            .observe(on: MainScheduler.asyncInstance)
             .bind(to: searchController.searchBar.rx.placeholder)
             .disposed(by: disposeBag)
-
+        
         output.isLoading
+            .observe(on: MainScheduler.asyncInstance)
             .bind(to: activityIndicator.rx.isAnimating)
             .disposed(by: disposeBag)
+        
+        output.viewState
+            .observe(on: MainScheduler.asyncInstance)
+            .distinctUntilChanged()
+            .withUnretained(self)
+            .bind(onNext: { owner, state in
+                switch state {
+                case .list:
+                    owner.collectionView.collectionViewLayout = PKListCollectionViewLayout.createLayoutList()
+                case .grid:
+                    owner.collectionView.collectionViewLayout = PKListCollectionViewLayout.createLayoutGrid()
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        Observable.combineLatest(output.viewState, output.items)
+            .observe(on: MainScheduler.asyncInstance)
+            .distinctUntilChanged { $0 == $1 }
+            .bind(onNext: { [weak self] state , items in
+                guard let self = self else { return }
+                drawPokeList(with: items, state: state)
+            })
+            .disposed(by: disposeBag)
     }
-    
 }
 
 extension PKListViewController {
@@ -78,22 +98,25 @@ extension PKListViewController {
         self.navigationController?.navigationBar.prefersLargeTitles = true
         searchController.hidesNavigationBarDuringPresentation = false
     }
-
-    private func setupTableView() {
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.estimatedRowHeight = 300
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.register(PokeListItemCell.self,
-                           forCellReuseIdentifier: PokeListItemCell.reuseIdentifier)
+    
+    private func setupCollectionView() {
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addSubview(tableView)
+        collectionView.register(
+            PokeListCollectionViewItemCell.self,
+            forCellWithReuseIdentifier: PokeListCollectionViewItemCell.reuseIdentifier
+        )
+        
+        view.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+        
+        configureDataSource()
     }
     
     private func setupActivityView() {
@@ -110,3 +133,94 @@ extension PKListViewController {
     }
 }
 
+// MARK: - DiffableDataSource
+
+extension PKListViewController {
+    private func configureDataSource() {
+        let cellRegistration = UICollectionView.CellRegistration
+        <PokeListCollectionViewItemCell, PKListItem> { (cell, indexPath, item) in
+            cell.configure(item: item)
+        }
+        
+        let cellRegistrationBanner = UICollectionView.CellRegistration
+        <PokeListCollectionViewBannerCell, PKListBanner> { (cell, indexPath, item) in
+            cell.configure(item: item)
+        }
+        
+        dataSource = UICollectionViewDiffableDataSource<PKListSection, SectionItem> (
+            collectionView: collectionView
+        ) {
+            (collectionView: UICollectionView,
+             indexPath: IndexPath,
+             identifier: SectionItem) -> UICollectionViewCell? in
+            switch identifier {
+            case .grid(let item):
+                return collectionView.dequeueConfiguredReusableCell(
+                    using: cellRegistration,
+                    for: indexPath,
+                    item: item
+                )
+            case .list(let item):
+                return collectionView.dequeueConfiguredReusableCell(
+                    using: cellRegistration,
+                    for: indexPath,
+                    item: item
+                )
+            case .bannerItem(let item):
+                return collectionView.dequeueConfiguredReusableCell(
+                    using: cellRegistrationBanner,
+                    for: indexPath,
+                    item: item
+                )
+            }
+        }
+    }
+    
+    private func drawPokeList(with list: [PKListItem], state: PKListState) {
+        if snapshot == nil {
+            applyInitialSnapshot(with: list)
+        } else {
+            applyNextSnapshot(with: list, state: state)
+        }
+    }
+    
+    private func applyInitialSnapshot(with items: [PKListItem]) {
+        snapshot = NSDiffableDataSourceSnapshot<PKListSection, SectionItem>()
+        snapshot.appendSections([.banner, .main])
+        
+        snapshot.appendItems(PKListBanner.mock.map{.bannerItem($0)}, toSection: .banner)
+        snapshot.appendItems(items.map{.list($0)}, toSection: .main)
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    private func applyNextSnapshot(with items: [PKListItem], state: PKListState) {
+        let prevItems = snapshot.itemIdentifiers(inSection: .main)
+        snapshot.deleteItems(prevItems)
+        snapshot.deleteSections([.main])
+
+        switch state {
+        case .list:
+            snapshot.appendSections([.main])
+            
+            let listItems = items.map { SectionItem.list($0) }
+            snapshot.appendItems(listItems, toSection: .main)
+        case .grid:
+            snapshot.appendSections([.main])
+            
+            let girdItems = items.map { SectionItem.grid($0) }
+            snapshot.appendItems(girdItems, toSection: .main)
+        }
+        
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
+}
+
+enum PKListSection: CaseIterable {
+    case banner, main
+}
+
+enum SectionItem: Hashable {
+    case bannerItem(PKListBanner)
+    case list(PKListItem)
+    case grid(PKListItem)
+}
